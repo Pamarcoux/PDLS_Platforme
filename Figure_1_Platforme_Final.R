@@ -16,7 +16,7 @@ library(scales)
 
 
 ####FL####
-
+testst test stest s
 #### Info plot ###
 
 data_sample_plot_population <- data_talyies_FL %>% select(Origin,Sample_code,B_cell_depletion_total,Day,Per_CD22_total,Per_CD19,Per_CD20,Per_CD22_CD10_plus,Treatment,Disease) %>% 
