@@ -65,7 +65,7 @@ Plot_PDLS_area_FL <- ggplot(data_sample_plot_area, aes(x = Day, y = value/1e6)) 
             color = "grey60", 
             size = 0.2) +  
   scale_fill_manual(values = sample_colors_FL)+
-  stat_compare_means(method = "t.test", paired = TRUE, aes(group = Day), hide.ns = FALSE, 
+  stat_compare_means(method = "t.test", paired = TRUE, aes(group = Day), hide.ns = TRUE, 
                      label = "p.signif", size = 3.5, vjust = 0.5,label.x.npc = 'middle') + 
   labs(
     title = "FL",  # Titre du graphique
@@ -81,12 +81,14 @@ Plot_PDLS_area_FL <- ggplot(data_sample_plot_area, aes(x = Day, y = value/1e6)) 
 ##### Plot FL Via #####
 data_filtered <- data_talyies_FL %>%
   select(Origin, Disease, Treatment, Sample_code, B_cell_depletion_total, Day, Viability) %>%
-  filter(Day %in% c("D0","D3","D6") & Treatment == "UT" & !is.na(Viability))
+  # filter(Day %in% c("D0","D3","D6") & Treatment == "UT" & !is.na(Viability))
+  filter(Day %in% c("D3","D6") & Treatment == "UT" & !is.na(Viability))
+  
   
 # Identifier les Sample_code qui apparaissent à la fois pour D3 et D6
 samples_with_D0_D3_D6 <- data_filtered %>%
   group_by(Sample_code) %>% filter(is.na(Viability) == FALSE) %>%
-  filter(n_distinct(Day) == 3) %>%
+  filter(n_distinct(Day) == 2) %>%
   ungroup() %>% distinct(Sample_code) %>% 
   pull(Sample_code)
 
@@ -97,7 +99,9 @@ data_sample_plot_viability<- data_filtered %>% select(Origin,Disease,Treatment,S
   mutate(variable = gsub("_Per", "", variable)) %>% 
   distinct() 
 
-comparisons <- list(c("D0", "D3"), c("D0", "D6"),c("D3", "D6"))
+comparisons <- c("D3", "D6")
+# comparisons <- list(c("D0", "D3"), c("D0", "D6"),c("D3", "D6"))
+
 Plot_PDLS_viability_FL <- ggplot(data_sample_plot_viability, aes(x = Day, y = value)) +
   geom_point(aes(fill = Sample_code),  # Utiliser 'fill' pour la couleur de remplissage
              shape = 21,  # Utiliser un shape qui supporte le remplissage
@@ -112,7 +116,7 @@ Plot_PDLS_viability_FL <- ggplot(data_sample_plot_viability, aes(x = Day, y = va
   scale_fill_manual(values = sample_colors_FL)+
   stat_compare_means(method = "t.test", paired = TRUE, 
                      comparisons = comparisons,
-                     hide.ns = FALSE, label = "p.signif", 
+                     hide.ns = TRUE, label = "p.signif", 
                      size = 3.5, label.y.npc = "top", vjust = 0.5)+
   labs(
     title = "FL",  # Titre du graphique
@@ -158,7 +162,7 @@ Plot_PDLS_number_FL<- ggplot(data_sample_PDLS_number, aes(x = Day, y = value)) +
             size = 0.2) +  
   scale_fill_manual(values = sample_colors_FL)+
   scale_y_continuous(labels = scales::comma,limits = c(0, 275000), n.breaks =4) +
-  stat_compare_means(method = "t.test", paired = TRUE, aes(group = Day), hide.ns = FALSE, 
+  stat_compare_means(method = "t.test", paired = TRUE, aes(group = Day), hide.ns = TRUE, 
                      label = "p.signif", size = 3.5, vjust = 0,label.x.npc = 'middle') + 
   labs(
     title = "FL",  # Titre du graphique
@@ -174,16 +178,17 @@ Plot_PDLS_number_FL<- ggplot(data_sample_PDLS_number, aes(x = Day, y = value)) +
 data_filtered <- data_talyies_FL %>% select(Origin,Sample_code,B_cell_depletion_total,Day,Per_CD22_total,Per_CD4,Per_CD8,Per_NK,Per_TGD,Treatment,Disease) %>% 
   filter(Treatment == "UT") 
   
-# Identifier les Sample_code qui apparaissent à la fois pour D3 et D6
-samples_with_D0_D3_D6 <- data_filtered %>%
+# Identifier les Sample_code qui apparaissent à la fois pour D0 et D3
+samples_with_D0_D3 <- data_filtered %>%
   group_by(Sample_code) %>% filter(is.na(Per_CD22_total) == FALSE) %>%
-  filter(n_distinct(Day) == 3) %>%
+  filter(Day %in% c("D0","D3")) %>%
+  filter(n_distinct(Day) == 2) %>%
   ungroup() %>% distinct(Sample_code) %>% 
   pull(Sample_code)
 
 # Filtrer les données originales pour inclure uniquement ces Sample_code
 data_sample_plot_population <- data_filtered %>%
-  filter(Sample_code %in% samples_with_D3_D6) %>%
+  filter(Sample_code %in% samples_with_D0_D3) %>%
   filter(Treatment == "UT") %>% 
   distinct() %>%  
   pivot_longer(cols = starts_with("Per_"), 
@@ -202,11 +207,11 @@ data_sample_plot_population$variable <- dplyr::recode(
   CD8 = "CD8+ \nT-Cells"
 )
 
-data_sample_plot_population1_D0_D3_D6 <-  data_sample_plot_population %>% filter(Day %in% c("D0","D3","D6")) %>% 
+data_sample_plot_population1_D0_D3_D6 <-  data_sample_plot_population %>% filter(Day %in% c("D0","D3")) %>% 
   group_by(Sample_code,Day) %>% 
   rename(Proportion = value) 
 
-comparisons <- list(c("D0", "D3"),c("D3", "D6"),c("D0", "D6"))
+comparisons <- list(c("D0", "D3"))
 
 plot_sample_plot_population1_D0_D3_D6_FL <- ggplot(data_sample_plot_population1_D0_D3_D6, aes(x = Day, y = Proportion)) +
   geom_point(aes(fill = Sample_code),  # Utiliser 'fill' pour la couleur de remplissage
@@ -222,8 +227,8 @@ plot_sample_plot_population1_D0_D3_D6_FL <- ggplot(data_sample_plot_population1_
   scale_y_continuous(n.breaks =4) +
   facet_wrap(vars(variable), ncol = 5, strip.position = "bottom", scales = "free") + 
   stat_compare_means(method = "t.test", paired = TRUE, 
-                     comparisons = comparisons,
-                     hide.ns = FALSE, label = "p.signif", 
+                     comparisons = aes(group = Day),
+                     hide.ns = TRUE, label = "p.signif", 
                      size = 3.5, label.y.npc = "top", vjust = 0,step.increase = 0.1) +
   labs(
     title = "FL",
@@ -315,7 +320,7 @@ data_sample_plot_population$variable <- dplyr::recode(
 
 graph_list <- list()
 for (i in (1:2)) {
-  if (i == 1) {
+  if (i == 2) {
     variable_i <- "Monocytes"
   } else {
     variable_i <- c("Tfh", "Tfr", "Treg")
@@ -326,7 +331,7 @@ data_sample_plot_population_i <- data_sample_plot_population %>%
 
 samples_with_D0_D3 <- data_sample_plot_population_i %>% 
   group_by(Sample_code) %>% filter(is.na(value) == FALSE) %>%
-  filter(if (i == 1) n_distinct(value) == 2 else n_distinct(value) == 6) %>%
+  filter(if (i == 2) n_distinct(value) == 2 else n_distinct(value) == 6) %>%
   ungroup() %>% distinct(Sample_code) %>% 
   pull(Sample_code)
 
@@ -361,14 +366,14 @@ data_sample_plot_population2_D0_D3 <-  data_sample_plot_population_i %>% filter(
   theme_custom() +
   theme(legend.position = "none")
  # Supprimer l'axe y pour les graphiques qui ne sont pas les premiers de la ligne
- if (i %% 5 != 1) {
+ if (i != 1) {
    graph <- graph + theme(axis.title.y = element_blank())
  }
  graph_list[[i]] <- graph
  }
 
 plot_sample_plot_population2_D0_D3_FL <- plot_grid(
-  plotlist = graph_list, ncol = 2, align = "v", axis = "tblr", rel_widths = c(0.25, 0.75))
+  plotlist = graph_list, ncol = 2, align = "v", axis = "tblr", rel_widths = c(0.75, 0.25))
 
 
 ##### Plot Correlation D0/D3 FL Pop2 ####
@@ -467,11 +472,11 @@ for (i in (1:4)) {
   }
   else {
     data_sample_plot_b_cells<-  data_sample_plot_population_i %>%
-      filter(Day %in% c("D0","D3","D6")) %>%
+      filter(Day %in% c("D0","D3")) %>%
       filter(Sample_code %in% samples_with_D0_D3) %>%
       group_by(Sample_code,Day) %>% 
       rename(Proportion = value) 
-    comparisons <- list(c("D0", "D3"), c("D0", "D6"))
+    comparisons <- list(c("D0", "D3"))
   }
   
   graph <- ggplot(data_sample_plot_b_cells, aes(x = Day, y = Proportion)) +
@@ -489,7 +494,7 @@ for (i in (1:4)) {
     facet_wrap(vars(variable), ncol = 5, strip.position = "bottom") +
     stat_compare_means(method = "t.test", paired = TRUE, 
                        comparisons = comparisons,
-                       hide.ns = FALSE, label = "p.signif", 
+                       hide.ns = TRUE, label = "p.signif", 
                        size = 3, label.y.npc = "top", vjust = 0) +
     # Formes plus variées pour différencier les groupes
     labs(
@@ -615,12 +620,13 @@ Plot_PDLS_area_DLBCL <- ggplot(data_sample_plot_area, aes(x = Day, y = value/1e6
 ##### Plot DLBCL Via #####
 data_filtered <- data_talyies_tFL_DLBCL %>%
   select(Origin, Disease, Treatment, Sample_code, B_cell_depletion_total, Day, Viability) %>%
-  filter(Day %in% c("D0","D3","D6") & Treatment == "UT" & !is.na(Viability))
+  # filter(Day %in% c("D0","D3","D6") & Treatment == "UT" & !is.na(Viability))
+  filter(Day %in% c("D3","D6") & Treatment == "UT" & !is.na(Viability))
 
 # Identifier les Sample_code qui apparaissent à la fois pour D3 et D6
 samples_with_D0_D3_D6 <- data_filtered %>%
   group_by(Sample_code) %>% filter(is.na(Viability) == FALSE) %>%
-  filter(n_distinct(Day) == 3) %>%
+  filter(n_distinct(Day) == 2) %>%
   ungroup() %>% distinct(Sample_code) %>% 
   pull(Sample_code)
 
@@ -631,7 +637,7 @@ data_sample_plot_viability<- data_filtered %>% select(Origin,Disease,Treatment,S
   mutate(variable = gsub("_Per", "", variable)) %>% 
   distinct() 
 
-comparisons <- list(c("D0", "D3"), c("D0", "D6"),c("D3", "D6"))
+comparisons <- c("D3", "D6")
 Plot_PDLS_viability_DLBCL <- ggplot(data_sample_plot_viability, aes(x = Day, y = value)) +
   geom_point(aes(fill = Sample_code),  # Utiliser 'fill' pour la couleur de remplissage
              shape = 21,  # Utiliser un shape qui supporte le remplissage
@@ -691,7 +697,7 @@ Plot_PDLS_number_DLBCL <- ggplot(data_sample_PDLS_number, aes(x = Day, y = value
             size = 0.2) +  
   scale_fill_manual(values = sample_colors_tFL_DLBCL)+
   scale_y_continuous(labels = scales::comma,limits = c(0, 275000), n.breaks =4) +
-  stat_compare_means(method = "t.test", paired = TRUE, aes(group = Day), hide.ns = FALSE, 
+  stat_compare_means(method = "t.test", paired = TRUE, aes(group = Day), hide.ns = TRUE, 
                      label = "p.signif", size = 3.5, vjust = 0 ,label.x.npc = 'middle') + 
   labs(
     title = "tFL/DLBCL",  # Titre du graphique
@@ -708,15 +714,16 @@ data_filtered <- data_talyies_tFL_DLBCL %>% select(Origin,Sample_code,B_cell_dep
   filter(Treatment == "UT") 
 
 # Identifier les Sample_code qui apparaissent à la fois pour D3 et D6
-samples_with_D0_D3_D6 <- data_filtered %>%
+samples_with_D0_D3 <- data_filtered %>%
   group_by(Sample_code) %>% filter(is.na(Per_CD22_total) == FALSE) %>%
-  filter(n_distinct(Day) == 3) %>%
+  filter(Day %in% c("D0","D3")) %>% 
+  filter(n_distinct(Day) == 2) %>%
   ungroup() %>% distinct(Sample_code) %>% 
   pull(Sample_code)
 
 # Filtrer les données originales pour inclure uniquement ces Sample_code
 data_sample_plot_population <- data_filtered %>%
-  filter(Sample_code %in% samples_with_D3_D6) %>%
+  filter(Sample_code %in% samples_with_D0_D3) %>%
   filter(Treatment == "UT") %>% 
   distinct() %>%  
   pivot_longer(cols = starts_with("Per_"), 
@@ -734,11 +741,11 @@ data_sample_plot_population$variable <- dplyr::recode(
   CD8 = "CD8+ \nT-Cells"
 )
 
-data_sample_plot_population1_D0_D3_D6 <-  data_sample_plot_population %>% filter(Day %in% c("D0","D3","D6")) %>% 
+data_sample_plot_population1_D0_D3_D6 <-  data_sample_plot_population %>% filter(Day %in% c("D0","D3")) %>% 
   group_by(Sample_code,Day) %>% 
   rename(Proportion = value) 
 
-comparisons <- list(c("D0", "D3"),c("D3", "D6"),c("D0", "D6"))
+comparisons <- list(c("D0", "D3"))
 
 plot_sample_plot_population1_D0_D3_D6_DLBCL <- ggplot(data_sample_plot_population1_D0_D3_D6, aes(x = Day, y = Proportion)) +
   geom_point(aes(fill = Sample_code),  # Utiliser 'fill' pour la couleur de remplissage
@@ -755,8 +762,8 @@ plot_sample_plot_population1_D0_D3_D6_DLBCL <- ggplot(data_sample_plot_populatio
   # scale_shape_manual(values = c(21, 24))# Ligne plus fine et élégante
   facet_wrap(vars(variable), ncol = 5, strip.position = "bottom",scales = "free") + 
   stat_compare_means(method = "t.test", paired = TRUE, 
-                     comparisons = comparisons,
-                     hide.ns = FALSE, label = "p.signif", 
+                     comparisons = aes(group = Day),
+                     hide.ns = TRUE, label = "p.signif", 
                      size = 3.5, label.y.npc = "top", vjust = 0) +
   # Formes plus variées pour différencier les groupes
   labs(
@@ -851,7 +858,7 @@ data_sample_plot_population$variable <- dplyr::recode(
 
 graph_list <- list()
 for (i in (1:2)) {
-  if (i == 1) {
+  if (i == 2) {
     variable_i <- "Monocytes"
   } else {
     variable_i <- c("Tfh", "Tfr", "Treg")
@@ -862,7 +869,7 @@ for (i in (1:2)) {
   
   samples_with_D0_D3 <- data_sample_plot_population_i %>% 
     group_by(Sample_code) %>% filter(is.na(value) == FALSE) %>%
-    filter(if (i == 1) n_distinct(value) == 2 else n_distinct(value) == 6) %>%
+    filter(if (i == 2) n_distinct(value) == 2 else n_distinct(value) == 6) %>%
     ungroup() %>% distinct(Sample_code) %>% 
     pull(Sample_code)
   
@@ -898,14 +905,14 @@ graph <- ggplot(data_sample_plot_population2_D0_D3, aes(x = Day, y = Proportion)
   theme(legend.position = "none")
 
 # Supprimer l'axe y pour les graphiques qui ne sont pas les premiers de la ligne
-if (i == 1) {
+if (i != 1) {
   graph <- graph + theme(axis.title.y = element_blank())
 }
 graph_list[[i]] <- graph
 }
 
 plot_sample_plot_population2_D0_D3_DLBCL <- plot_grid(
-  plotlist = graph_list, ncol = 2, align = "v", axis = "tblr", rel_widths = c(0.25, 0.75))
+  plotlist = graph_list, ncol = 2, align = "v", axis = "tblr", rel_widths = c(0.75, 0.25))
 
 
 ##### Plot Correlation D0/D3 tFL/DLBCL Pop2 ####
@@ -1024,11 +1031,11 @@ for (i in (1:4)) {
   }
   else {
     data_sample_plot_b_cells<-  data_sample_plot_population_i %>%
-      filter(Day %in% c("D0","D3","D6")) %>%
+      filter(Day %in% c("D0","D3")) %>%
       filter(Sample_code %in% samples_with_D0_D3) %>%
       group_by(Sample_code,Day) %>% 
       rename(Proportion = value) 
-    comparisons <- list(c("D0", "D3"), c("D0", "D6"))
+    comparisons <- list(c("D0", "D3"))
   }
   
   graph <- ggplot(data_sample_plot_b_cells, aes(x = Day, y = Proportion)) +
@@ -1045,7 +1052,7 @@ for (i in (1:4)) {
     facet_wrap(vars(variable), ncol = 5, strip.position = "bottom") +
     stat_compare_means(method = "t.test", paired = TRUE, 
                        comparisons = comparisons,
-                       hide.ns = FALSE, label = "p.signif", 
+                       hide.ns = TRUE, label = "p.signif", 
                        size = 3, label.y.npc = "top", vjust = 0) +
     labs(
       title = "",
@@ -1288,13 +1295,13 @@ D <- plot_grid((Plot_PDLS_number_FL ),(Plot_PDLS_number_DLBCL +
 
 E <- plot_grid((plot_sample_plot_population1_D0_D3_D6_FL ),(plot_sample_plot_population1_D0_D3_D6_DLBCL +
                                                                                    labs(title = "tFL/DLBCL")), ncol = 2, labels = c(""))
-F <- plot_grid((plot_sample_plot_population2_D0_D3_FL ),(plot_sample_plot_population2_D0_D3_DLBCL +
+'F' <- plot_grid((plot_sample_plot_populationCD3_D0_D3_FL ),(plot_sample_plot_populationCD3_D0_D3_DLBCL +
                                                              labs(title = "tFL/DLBCL")), ncol = 2, labels = c(""))
-G <- plot_grid((plot_sample_plot_populationCD3_D0_D3_FL ),(plot_sample_plot_populationCD3_D0_D3_DLBCL +
-                                                                labs(title = "tFL/DLBCL")), ncol = 2, labels = c(""))
+G <- plot_grid((plot_sample_plot_population2_D0_D3_FL ),(plot_sample_plot_population2_D0_D3_DLBCL +
+                                                             labs(title = "tFL/DLBCL")), ncol = 2, labels = c(""))
 
 
-Figure_1_total <- plot_grid(
+Figure_2_total <- plot_grid(
   plot_grid(B,C, D, ncol = 3, labels = c("B","C", "D")),  # Deuxième ligne
   plot_grid(E, ncol = 1, labels = c("E")), # 3-4 Lignes
   plot_grid(F, ncol = 1, labels = c("F")),
@@ -1302,8 +1309,8 @@ Figure_1_total <- plot_grid(
   nrow=4 )
 
 ggsave(
-  filename = "/run/user/309223354/gvfs/smb-share:server=crct-share.inserm.lan,share=crct09/Paul/Platforme_paper/Figure/Figure1/Figure_1_total.png",
-  plot = Figure_1_total,
+  filename = "/run/user/309223354/gvfs/smb-share:server=crct-share.inserm.lan,share=crct09/Paul/Platforme_paper/Figure/Figure2/Figure_2_total.png",
+  plot = Figure_2_total,
   device = "png",
   width = 32,        # largeur A4 en cm
   height = 40 ,     # hauteur A4 en cm
@@ -1313,8 +1320,8 @@ ggsave(
 
 
 # ggsave(
-#   filename = "Paper_platforme/Figure/Figure_1_total.svg",
-#   plot = Figure_1_total,
+#   filename = "Paper_platforme/Figure/Figure_2_total.svg",
+#   plot = Figure_2_total,
 #   device = "svg",
 #   width = 29.7,        # largeur A4 en cm
 #   height = 21 ,     # hauteur A4 en cm
@@ -1323,13 +1330,13 @@ ggsave(
 # )
 ####FIG 2####
 
-Figure_2_total <- plot_grid(plot_correlation_D0_D3_pop1_all,plot_correlation_D0_D3_pop2_all, 
-                            labels = c("A","", ""),
+Figure_2bis_total <- plot_grid(plot_correlation_D0_D3_pop1_all,plot_correlation_D0_D3_pop2_all, 
+                            labels = c("H","", ""),
                             nrow=2 )
 
 ggsave(
-  filename = "/run/user/309223354/gvfs/smb-share:server=crct-share.inserm.lan,share=crct09/Paul/Platforme_paper/Figure/Figure1/Figure_2_total.png",
-  plot = Figure_2_total,
+  filename = "/run/user/309223354/gvfs/smb-share:server=crct-share.inserm.lan,share=crct09/Paul/Platforme_paper/Figure/Figure2/Figure_2bis_total.png",
+  plot = Figure_2bis_total,
   device = "png",
   width = 32,        # largeur A4 en cm
   height = 18 ,     # hauteur A4 en cm
@@ -1339,27 +1346,27 @@ ggsave(
 
 
 
-######Suppl Fig ####
-ASupl <- plot_grid((plot_sample_plot_population_D0_D3_D6_Bcells_FL ),(plot_sample_plot_population_D0_D3_D6_Bcells_DLBCL +
-                                                               labs(title = "tFL/DLBCL",
-                                                                    y ="")), ncol = 2, labels = c(""))
-  
-BSupl1 <- plot_correlation_D0_D3_pop1_DLBCL 
-BSupl2 <- plot_correlation_D0_D3_pop2_DLBCL                                                                         
-                                                                          
-Figure_1_Suplr <- plot_grid(
-  plot_grid(ASupl, ncol = 1, labels = c("A")),  
-  plot_grid(BSupl1, ncol = 1, labels = c("B")), 
-  plot_grid(BSupl2, ncol = 1, labels = c("")),
-  nrow =3,
-  rel_heights = c(1, 0.8,0.8))
-
-ggsave(
-  filename = "/run/user/309223354/gvfs/smb-share:server=crct-share.inserm.lan,share=crct09/Paul/Platforme_paper/Figure/Figure1/Figure_1_Suplr.png",
-  plot = Figure_1_Suplr,
-  device = "png",
-  width = 29.7,        # largeur A4 en cm
-  height = 25 ,     # hauteur A4 en cm
-  units = "cm",
-  dpi = 300
-)
+# ######Suppl Fig ####
+# ASupl <- plot_grid((plot_sample_plot_population_D0_D3_D6_Bcells_FL ),(plot_sample_plot_population_D0_D3_D6_Bcells_DLBCL +
+#                                                                labs(title = "tFL/DLBCL",
+#                                                                     y ="")), ncol = 2, labels = c(""))
+#   
+# BSupl1 <- plot_correlation_D0_D3_pop1_DLBCL 
+# BSupl2 <- plot_correlation_D0_D3_pop2_DLBCL                                                                         
+#                                                                           
+# Figure_2_Suplr <- plot_grid(
+#   plot_grid(ASupl, ncol = 1, labels = c("A")),  
+#   plot_grid(BSupl1, ncol = 1, labels = c("B")), 
+#   plot_grid(BSupl2, ncol = 1, labels = c("")),
+#   nrow =3,
+#   rel_heights = c(1, 0.8,0.8))
+# 
+# ggsave(
+#   filename = "/run/user/309223354/gvfs/smb-share:server=crct-share.inserm.lan,share=crct09/Paul/Platforme_paper/Figure/Figure2/Figure_2_Suplr.png",
+#   plot = Figure_2_Suplr,
+#   device = "png",
+#   width = 29.7,        # largeur A4 en cm
+#   height = 25 ,     # hauteur A4 en cm
+#   units = "cm",
+#   dpi = 300
+# )

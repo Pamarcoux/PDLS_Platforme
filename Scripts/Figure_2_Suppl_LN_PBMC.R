@@ -16,7 +16,6 @@ library(scales)
 
 
 ####LNvPBMC####
-# setwd("//crct-share.inserm.lan/CRCT09/Team 3D/TALYIES/Data/")
 data_talyies_LN_PBMC <- data_talyies_full %>% 
   filter(Disease %in% c("FL","DLBCL","tFL") & Origin %in% c("LN","PBMC")) %>% 
   mutate(Origin = recode(Origin,
@@ -72,13 +71,12 @@ Plot_PDLS_area_LNvPBMC <- ggplot(data_sample_plot_area, aes(x = Day, y = value/1
 
 ##### Plot LNvPBMC Via #####
 data_sample_plot_viability<- data_talyies_LN_PBMC %>% select(Origin,Disease,Treatment,Sample_code,B_cell_depletion_total,Day,Viability) %>% 
-  filter(Day %in% c("D0","D3","D6") & Treatment == "UT") %>% 
+  filter(Day %in% c("D3","D6") & Treatment == "UT") %>% 
   select(Sample_code,B_cell_depletion_total,Day,Viability,Disease,Origin) %>% 
   melt(id.vars = c("B_cell_depletion_total","Day","Sample_code","Disease","Origin")) %>% 
   mutate(variable = gsub("_Per", "", variable)) %>% 
   distinct() 
 
-comparisons <- list(c("D0", "D3"), c("D0", "D6"))
 Plot_PDLS_viability_LNvPBMC <- ggplot(data_sample_plot_viability, aes(x = Day, y = value, fill = Origin)) +
   geom_boxplot(position = position_dodge(0.8), outliers = FALSE, colour = "black", size = 0.5) +
   facet_wrap(vars(variable), ncol = 5, strip.position = "bottom") +
@@ -142,18 +140,16 @@ data_sample_plot_population$variable <- dplyr::recode(
   CD8 = "CD8+ T-cells"
 )
 
-data_sample_plot_population1_D0_D3_D6 <-  data_sample_plot_population %>% filter(Day %in% c("D0","D3","D6")) %>% 
+data_sample_plot_population1_D0_D3_D6 <-  data_sample_plot_population %>% filter(Day %in% c("D0","D3")) %>% 
   group_by(Sample_code,Day) %>% 
   rename(Proportion = value) 
-
-comparisons <- list(c("D0", "D3"),c("D3", "D6"),c("D0", "D6"))
 
 plot_sample_plot_population1_D0_D3_D6_LNvPBMC <- ggplot(data_sample_plot_population1_D0_D3_D6, aes(x = Day, y = Proportion,fill = Origin)) +
   geom_boxplot(position = position_dodge(0.8), outliers = FALSE, colour = "black", size = 0.5) +
   facet_wrap(vars(variable), ncol = 5, strip.position = "bottom",scales = "free") +
   stat_compare_means(method = "t.test", paired = FALSE, aes(group = Origin), 
                      hide.ns = TRUE, label = "p.signif", 
-                     size = 3.5, vjust = 0.1, label.x.npc = 'middle') +  
+                     size = 3.5, vjust = 0.3, label.x.npc = 'middle') +  
   # scale_fill_manual(values = sample_colors_LN_PBMC)+
   labs(
     title = "",
@@ -168,7 +164,7 @@ plot_sample_plot_population1_D0_D3_D6_LNvPBMC <- ggplot(data_sample_plot_populat
 
 
 ##### Plot LNvPBMC Pop 2 (Monocytes,Tfh,Tfr,Treg) #####
-data_sample_plot_population <- data_talyies_LN_PBMC %>% select(Origin,Sample_code,B_cell_depletion_total,Day,Per_CD3,Tfr,Treg,Tfh,Per_CD11b,Treatment,Disease) %>% 
+data_sample_plot_population <- data_talyies_LN_PBMC %>% select(Origin,Sample_code,B_cell_depletion_total,Day,Tfr,Treg,Tfh,Per_CD11b,Treatment,Disease) %>% 
   rename(Per_Tfh = Tfh, Per_Tfr = Tfr, Per_Treg = Treg) %>%
   filter(Treatment == "UT") %>% 
   distinct() %>%  
@@ -179,7 +175,7 @@ data_sample_plot_population <- data_talyies_LN_PBMC %>% select(Origin,Sample_cod
          variable = gsub("_total", "", variable))
 
 # Définir l'ordre des variables et leurs couleurs
-data_sample_plot_population$variable <- factor(data_sample_plot_population$variable, levels = c("CD11b","CD3", "Tfh","Tfr","Treg", "CD8", "NK", "TGD","NKT"))
+data_sample_plot_population$variable <- factor(data_sample_plot_population$variable, levels = c("CD11b", "Tfh","Tfr","Treg", "CD8", "NK", "TGD","NKT"))
 data_sample_plot_population$variable <- dplyr::recode(
   data_sample_plot_population$variable,
   CD11b = "Monocytes",
@@ -189,12 +185,24 @@ data_sample_plot_population2_D0_D3 <-  data_sample_plot_population %>% filter(Da
   group_by(Sample_code,Day) %>% 
   rename(Proportion = value) 
 
-plot_sample_plot_population2_D0_D3_LNvPBMC <- ggplot(data_sample_plot_population2_D0_D3, aes(x = Day, y = Proportion,fill = Origin)) +
+
+graph_list <- list()
+for (i in (1:2)) {
+  if (i == 2) {
+    variable_i <- "Monocytes"
+  } else {
+    variable_i <- c("Tfh", "Tfr", "Treg")
+  }
+
+  data_sample_plot_population_i <- data_sample_plot_population2_D0_D3 %>% 
+    filter(variable %in% variable_i) 
+  
+  graph <- ggplot(data_sample_plot_population_i, aes(x = Day, y = Proportion,fill = Origin)) +
   geom_boxplot(position = position_dodge(0.8), outliers = FALSE, colour = "black", size = 0.5) +
   facet_wrap(vars(variable), ncol = 5, strip.position = "bottom") +
   stat_compare_means(method = "t.test", paired = FALSE, aes(group = Origin), 
                      hide.ns = TRUE, label = "p.signif", 
-                     size = 3.5, vjust = 0.1, label.x.npc = 'middle') +  
+                     size = 3.5, vjust = 0.3, label.x.npc = 'middle') +  
   # scale_fill_manual(values = sample_colors_LN_PBMC)+
   labs(
     title = "",
@@ -204,9 +212,16 @@ plot_sample_plot_population2_D0_D3_LNvPBMC <- ggplot(data_sample_plot_population
     shape = "Origin",
   ) +
   theme_custom()+
-  theme(legend.position = "right",
+  theme(legend.position = "none",
         axis.title.x = element_blank())
-
+if (i != 1) {
+  graph <- graph + theme(axis.title.y = element_blank(),
+                         legend.position = "right",)
+}
+graph_list[[i]] <- graph
+}
+plot_sample_plot_population2_D0_D3_LNvPBMC <- plot_grid(
+  plotlist = graph_list, ncol = 2, align = "v", axis = "tblr", rel_widths = c(0.7, 0.3))
 
 ##### Plot LNvPBMC B cells #####
 data_sample_plot_population <- data_talyies_LN_PBMC %>% select(Origin,Sample_code,B_cell_depletion_total,Day,Per_CD22_total,Per_CD19,Per_CD20,Per_CD22_CD10_plus,Treatment,Disease) %>% 
@@ -286,7 +301,10 @@ plot_sample_plot_populationCD3_D0_D3_LNvPBMC <- ggplot(data_sample_plot_populati
         axis.title.x = element_blank())
 
 #### Montage ####
+empty_plot <- ggplot() + theme_void()
+
 ABC <- plot_grid(Plot_PDLS_area_LNvPBMC,Plot_PDLS_viability_LNvPBMC,Plot_PDLS_number_LNvPBMC,ncol = 3,labels = c("A","B", "C"))
+A <- plot_grid(Plot_PDLS_viability_LNvPBMC,empty_plot,empty_plot,ncol = 3,labels = c("A","", ""))
 
 D <- plot_sample_plot_population1_D0_D3_D6_LNvPBMC
 
@@ -297,20 +315,26 @@ F <- plot_sample_plot_population_D0_D3_D6_Bcells_LNvPBMC
 
 G <- plot_sample_plot_populationCD3_D0_D3_LNvPBMC
 
-Figure_2_Suppl <- plot_grid(
-  plot_grid(ABC, ncol = 1, labels = c("")),  # Deuxième ligne
-  plot_grid(D, ncol = 1, labels = c("D")), # 3-4 Lignes
-  plot_grid(E, ncol = 1, labels = c("E")),
-  plot_grid(F, ncol = 1, labels = c("F")),
-  plot_grid(G, ncol = 1, labels = c("G")),
-  nrow=5 )
+# Figure_1_Suppl <- plot_grid(
+#   plot_grid(ABC, ncol = 1, labels = c("")),  # Deuxième ligne
+#   plot_grid(D, ncol = 1, labels = c("D")), # 3-4 Lignes
+#   plot_grid(E, ncol = 1, labels = c("E")),
+#   plot_grid(F, ncol = 1, labels = c("F")),
+#   plot_grid(G, ncol = 1, labels = c("G")),
+#   nrow=5 )
+
+Figure_1_Suppl <- plot_grid(
+  plot_grid(A, ncol = 1, labels = c("")),  # Deuxième ligne
+  plot_grid(D, ncol = 1, labels = c("B")), # 3-4 Lignes
+  plot_grid(E, ncol = 1, labels = c("C")),
+  nrow=3 )
 
 ggsave(
-  filename = "/run/user/309223354/gvfs/smb-share:server=crct-share.inserm.lan,share=crct09/Paul/Platforme_paper/Figure/Figure1/Figure_2_Suplr.png",
-  plot = Figure_2_Suppl,
+  filename = "/run/user/309223354/gvfs/smb-share:server=crct-share.inserm.lan,share=crct09/Paul/Platforme_paper/Figure/Figure2/Figure_2_Suppl.png",
+  plot = Figure_1_Suppl,
   device = "png",
   width = 29.7,        # largeur A4 en cm
-  height = 40 ,     # hauteur A4 en cm
+  height = 20 ,     # hauteur A4 en cm
   units = "cm",
   dpi = 300
 )

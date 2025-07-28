@@ -67,15 +67,15 @@ for (i in (1:2)) {
     ) +
     theme_custom()+
     theme(legend.position = "none")
-  # Supprimer l'axe y pour les graphiques qui ne sont pas les premiers de la ligne
-  if (i %% 5 != 1) {
-    graph <- graph + theme(axis.title.y = element_blank())
+  #Separer les graphs icp et activateur
+  if (i == 1) {
+    plot_act_CD4_FL <- graph
+  } else
+  {
+    plot_icp_CD4_FL <- graph
   }
-  graph_list[[i]] <- graph
-}
 
-plot_icp_CD4_FL <- plot_grid(
-  plotlist = graph_list, ncol = 2, align = "v", axis = "tblr", rel_widths = c(0.33, 0.66))
+}
 
 ##### Plot ICP FL CD8 #####
 data_sample_plot_icp_CD8<- data_sample_plot_icp %>% 
@@ -128,14 +128,16 @@ for (i in (1:2)) {
     theme_custom()+
     theme(legend.position = "none")
   # Supprimer l'axe y pour les graphiques qui ne sont pas les premiers de la ligne
-  if (i %% 5 != 1) {
-    graph <- graph + theme(axis.title.y = element_blank())
+  if (i == 1) {
+    plot_act_CD8_FL <- graph
+  } else
+  {
+    plot_icp_CD8_FL <- graph
   }
-  graph_list[[i]] <- graph
 }
 
-plot_icp_CD8_FL <- plot_grid(
-  plotlist = graph_list, ncol = 2, align = "v", axis = "tblr", rel_widths = c(0.33, 0.66))
+# plot_icp_CD8_FL <- plot_grid(
+#   plotlist = graph_list, ncol = 2, align = "v", axis = "tblr", rel_widths = c(0.33, 0.66))
 ##### Plot ICP RFI FL CD4 ####
 data_sample_plot_icp <- data_talyies_FL %>% select(Disease,Sample_code,B_cell_depletion_total,Day,Pop,'41BBL_RFI',PDL1_RFI,PDL2_RFI,CD79b_RFI,LAG3_RFI,TIM3_RFI,PD1_RFI,TIGIT_RFI,'41BB_RFI',CD28_RFI)
 data_sample_plot_icp_CD4<- data_sample_plot_icp %>% 
@@ -188,15 +190,16 @@ for (i in (1:2)) {
     theme_custom()+
     theme(legend.position = "none")
   
-  # Supprimer l'axe y pour les graphiques qui ne sont pas les premiers de la ligne
-  if (i %% 5 != 1) {
-    graph <- graph + theme(axis.title.y = element_blank())
+  if (i == 1) {
+    plot_act_CD4_FL_RFI <- graph
+  } else
+  {
+    plot_icp_CD4_FL_RFI <- graph
   }
-  graph_list[[i]] <- graph
 }
 
-plot_icp_CD4_FL_RFI <- plot_grid(
-  plotlist = graph_list, ncol = 2, align = "v", axis = "tblr", rel_widths = c(0.33, 0.66))
+# plot_icp_CD4_FL_RFI <- plot_grid(
+#   plotlist = graph_list, ncol = 2, align = "v", axis = "tblr", rel_widths = c(0.33, 0.66))
 
 ##### Plot ICP RFI CD8 FL #####
 data_sample_plot_icp <- data_talyies_FL %>% select(Disease,Sample_code,B_cell_depletion_total,Day,Pop,'41BB_RFI',PDL1_RFI,PDL2_RFI,CD79b_RFI,LAG3_RFI,TIM3_RFI,PD1_RFI,TIGIT_RFI,'41BB_RFI',CD28_RFI)
@@ -250,15 +253,16 @@ for (i in (1:2)) {
     theme_custom()+
     theme(legend.position = "none")
   
-  # Supprimer l'axe y pour les graphiques qui ne sont pas les premiers de la ligne
-  if (i %% 5 != 1) {
-    graph <- graph + theme(axis.title.y = element_blank())
+  if (i == 1) {
+    plot_act_CD8_FL_RFI <- graph
+  } else
+  {
+    plot_icp_CD8_FL_RFI <- graph
   }
-  graph_list[[i]] <- graph
 }
 
-plot_icp_CD8_FL_RFI <- plot_grid(
-  plotlist = graph_list, ncol = 2, align = "v", axis = "tblr", rel_widths = c(0.33, 0.66))
+# plot_icp_CD8_FL_RFI <- plot_grid(
+#   plotlist = graph_list, ncol = 2, align = "v", axis = "tblr", rel_widths = c(0.33, 0.66))
 
 ##### Plot ICP FL B-Cells ####
 data_sample_plot_icp <- data_talyies_FL %>% select(Disease,Sample_code,B_cell_depletion_total,Day,Pop,'41BB_Per',PDL1_Per,PDL2_Per,CD79b_Per,LAG3_Per,TIM3_Per,PD1_Per,TIGIT_Per,'41BB_Per',CD28_Per,'PD1/LAG3_Per','PD1/TIM3_Per')
@@ -370,15 +374,19 @@ for (i in (1:2)) {
     ) +
     theme_custom()+
     theme(legend.position = "none")
-  # Supprimer l'axe y pour les graphiques qui ne sont pas les premiers de la ligne
-  if (i %% 5 != 1) {
-    graph <- graph + theme(axis.title.y = element_blank())
+  
+  #Separer les graphs icp et activateur
+  if (i == 1) {
+    plot_act_CD4_DLBCL <- graph + 
+      theme(axis.title.y = element_blank()) 
+  } else
+  {
+    plot_icp_CD4_DLBCL <- graph
   }
-  graph_list[[i]] <- graph
 }
 
-plot_icp_CD4_DLBCL <- plot_grid(
-  plotlist = graph_list, ncol = 2, align = "v", axis = "tblr", rel_widths = c(0.33, 0.66))
+# plot_icp_CD4_DLBCL <- plot_grid(
+#   plotlist = graph_list, ncol = 2, align = "v", axis = "tblr", rel_widths = c(0.33, 0.66))
 
 ##### Plot ICP DLBCL CD8 #####
 data_sample_plot_icp_CD8<- data_sample_plot_icp %>% 
@@ -430,15 +438,19 @@ for (i in (1:2)) {
     ) +
     theme_custom()+
     theme(legend.position = "none")
-  # Supprimer l'axe y pour les graphiques qui ne sont pas les premiers de la ligne
-  if (i %% 5 != 1) {
-    graph <- graph + theme(axis.title.y = element_blank())
+  
+  #Separer les graphs icp et activateur
+  if (i == 1) {
+    plot_act_CD8_DLBCL <- graph + 
+      theme(axis.title.y = element_blank()) 
+  } else
+  {
+    plot_icp_CD8_DLBCL <- graph
   }
-  graph_list[[i]] <- graph
 }
 
-plot_icp_CD8_DLBCL <- plot_grid(
-  plotlist = graph_list, ncol = 2, align = "v", axis = "tblr", rel_widths = c(0.33, 0.66))
+# plot_icp_CD8_DLBCL <- plot_grid(
+#   plotlist = graph_list, ncol = 2, align = "v", axis = "tblr", rel_widths = c(0.33, 0.66))
 ##### Plot ICP RFI FL CD4 ####
 data_sample_plot_icp <- data_talyies_tFL_DLBCL %>% select(Disease,Sample_code,B_cell_depletion_total,Day,Pop,'41BBL_RFI',PDL1_RFI,PDL2_RFI,CD79b_RFI,LAG3_RFI,TIM3_RFI,PD1_RFI,TIGIT_RFI,'41BB_RFI',CD28_RFI)
 data_sample_plot_icp_CD4<- data_sample_plot_icp %>% 
@@ -491,15 +503,19 @@ for (i in (1:2)) {
     theme_custom()+
     theme(legend.position = "none")
   
-  # Supprimer l'axe y pour les graphiques qui ne sont pas les premiers de la ligne
-  if (i %% 5 != 1) {
-    graph <- graph + theme(axis.title.y = element_blank())
+  #Separer les graphs icp et activateur
+  if (i == 1) {
+    plot_act_CD4_DLBCL_RFI <- graph +
+      theme(axis.title.y = element_blank()) 
+  } else
+  {
+    plot_icp_CD4_DLBCL_RFI <- graph
   }
-  graph_list[[i]] <- graph
 }
 
-plot_icp_CD4_DLBCL_RFI <- plot_grid(
-  plotlist = graph_list, ncol = 2, align = "v", axis = "tblr", rel_widths = c(0.33, 0.66))
+
+# plot_icp_CD4_DLBCL_RFI <- plot_grid(
+#   plotlist = graph_list, ncol = 2, align = "v", axis = "tblr", rel_widths = c(0.33, 0.66))
 
 ##### Plot ICP RFI CD8 FL #####
 data_sample_plot_icp <- data_talyies_tFL_DLBCL %>% select(Disease,Sample_code,B_cell_depletion_total,Day,Pop,'41BBL_RFI',PDL1_RFI,PDL2_RFI,CD79b_RFI,LAG3_RFI,TIM3_RFI,PD1_RFI,TIGIT_RFI,'41BB_RFI',CD28_RFI)
@@ -553,15 +569,15 @@ for (i in (1:2)) {
     theme_custom()+
     theme(legend.position = "none")
   
-  # Supprimer l'axe y pour les graphiques qui ne sont pas les premiers de la ligne
-  if (i %% 5 != 1) {
-    graph <- graph + theme(axis.title.y = element_blank())
+  #Separer les graphs icp et activateur
+  if (i == 1) {
+    plot_act_CD8_DLBCL_RFI <- graph + 
+      theme(axis.title.y = element_blank()) 
+  } else
+  {
+    plot_icp_CD8_DLBCL_RFI <- graph
   }
-  graph_list[[i]] <- graph
 }
-
-plot_icp_CD8_DLBCL_RFI <- plot_grid(
-  plotlist = graph_list, ncol = 2, align = "v", axis = "tblr", rel_widths = c(0.33, 0.66))
 
 ##### Plot ICP FL B-Cells ####
 data_sample_plot_icp <- data_talyies_tFL_DLBCL %>% select(Disease,Sample_code,B_cell_depletion_total,Day,Pop,'41BB_Per',PDL1_Per,PDL2_Per,CD79b_Per,LAG3_Per,TIM3_Per,PD1_Per,TIGIT_Per,'41BB_Per',CD28_Per,'PD1/LAG3_Per','PD1/TIM3_Per')
@@ -738,34 +754,33 @@ for (i in seq_along(unique(data_correlation_icp_CD8$variable))) {
 }
 
 plot_correlation_D0_D3_ICP_CD8 <- plot_grid(plotlist = graph_list, ncol = 6, align = "v", axis = "tblr")+ labs(title = "FL")
+###Montage 2 with Suppl ####
+AB <- plot_grid((plot_act_CD4_FL),plot_act_CD4_DLBCL,plot_act_CD8_FL,plot_act_CD8_DLBCL, ncol = 4, labels = c("A","","B",""))
+AB_suppl <- plot_grid((plot_act_CD4_FL_RFI),plot_act_CD4_DLBCL_RFI,plot_act_CD8_FL_RFI,plot_act_CD8_DLBCL_RFI, ncol = 4, labels = c("A","","B",""))
 
+C <-  plot_grid(plot_icp_CD4_FL,plot_icp_CD4_DLBCL, ncol = 2, labels = c("C",""))
+C_suppl <-  plot_grid(plot_icp_CD4_FL_RFI,plot_icp_CD4_DLBCL_RFI, ncol = 2, labels = c("C",""))
 
-### Montage ####
-A <- plot_grid((plot_icp_CD4_FL),(plot_icp_CD4_DLBCL), ncol = 2, labels = c("A","B"))
-
-B <- plot_grid((plot_icp_CD8_FL),(plot_icp_CD8_DLBCL), ncol = 2, labels = c("C","D"))
-
-C <- plot_grid((plot_icp_CD4_FL_RFI),(plot_icp_CD4_DLBCL_RFI +labs(y ="")), ncol = 2, labels = c("E","F"))
-
-D <- plot_grid((plot_icp_CD8_FL_RFI),(plot_icp_CD8_DLBCL_RFI +labs(y="")), ncol = 2, labels = c("G","H"))
+D <-  plot_grid(plot_icp_CD8_FL,plot_icp_CD8_DLBCL, ncol = 2, labels = c("D",""))
+D_suppl <-  plot_grid(plot_icp_CD8_FL_RFI,plot_icp_CD8_DLBCL_RFI, ncol = 2, labels = c("D",""))
 
 E <- plot_correlation_D0_D3_ICP_CD4
 F <- plot_correlation_D0_D3_ICP_CD8
 
-Figure_2_total <- plot_grid(
-  plot_grid(A, ncol = 1, labels = c("")),  # Deuxième ligne
-  plot_grid(B, ncol = 1, labels = c("")),
+Figure_3_total <- plot_grid(
+  plot_grid(AB, ncol = 1, labels = c("")),  # Deuxième ligne
   plot_grid(C, ncol = 1, labels = c("")),
   plot_grid(D, ncol = 1, labels = c("")),
-  plot_grid(E, ncol = 1, labels = c("I")),
-  plot_grid(F, ncol = 1, labels = c("J")),
-  
-  nrow=6 )
+  plot_grid(E, ncol = 1, labels = c("E")),
+  plot_grid(F, ncol = 1, labels = c("F")),
 
-print(Figure_2_total)
+  nrow=5 )
+
+print(Figure_3_total)
+
 ggsave(
-  filename = "/run/user/309223354/gvfs/smb-share:server=crct-share.inserm.lan,share=crct09/Paul/Platforme_paper/Figure/Figure2/Figure_2_total2.png",
-  plot = Figure_2_total,
+  filename = "/run/user/309223354/gvfs/smb-share:server=crct-share.inserm.lan,share=crct09/Paul/Platforme_paper/Figure/Figure3/Figure_3_total.png",
+  plot = Figure_3_total,
   device = "png",
   width = 32,        # largeur A4 en cm
   height = 50 ,     # hauteur A4 en cm
@@ -773,16 +788,29 @@ ggsave(
   dpi = 300
 )
 
-# ggsave(
-#   filename = "Paper_platforme/Figure/Figure_1_total.svg",
-#   plot = Figure_1_total,
-#   device = "svg",
-#   width = 29.7,        # largeur A4 en cm
-#   height = 21 ,     # hauteur A4 en cm
-#   units = "cm",
-#   dpi = 300
-#
-
+#### Montage Old####
+# A <- plot_grid((plot_act_CD4_FL),plot_act_CD4_DLBCL,plot_act_CD4_FL_RFI,plot_act_CD4_DLBCL_RFI, ncol = 4, labels = c("A","B","",""))
+# 
+# B <- plot_grid((plot_icp_CD8_FL),(plot_icp_CD8_DLBCL), ncol = 2, labels = c("C","D"))
+# 
+# C <- plot_grid((plot_icp_CD4_FL_RFI),(plot_icp_CD4_DLBCL_RFI +labs(y ="")), ncol = 2, labels = c("E","F"))
+# 
+# D <- plot_grid((plot_icp_CD8_FL_RFI),(plot_icp_CD8_DLBCL_RFI +labs(y="")), ncol = 2, labels = c("G","H"))
+# 
+# E <- plot_correlation_D0_D3_ICP_CD4
+# F <- plot_correlation_D0_D3_ICP_CD8
+# 
+# Figure_3_total <- plot_grid(
+#   plot_grid(A, ncol = 1, labels = c("")),  # Deuxième ligne
+#   plot_grid(B, ncol = 1, labels = c("")),
+#   plot_grid(C, ncol = 1, labels = c("")),
+#   plot_grid(D, ncol = 1, labels = c("")),
+#   plot_grid(E, ncol = 1, labels = c("I")),
+#   plot_grid(F, ncol = 1, labels = c("J")),
+#   
+#   nrow=6 )
+# 
+# print(Figure_3_total)
 
 ###Suppl Figure LN vs PBMC #####
 data_talyies_LN_PBMC <- data_talyies_full %>% 
@@ -841,25 +869,30 @@ plot_icp_CD8_PBvsLN <- ggplot(data_sample_plot_icp_CD8, aes(x = Day, y = value,f
   theme_custom()
 
 #####Montage #####
-Abis <- plot_grid((plot_icp_CD4_PBvsLN), ncol = 1, labels = c(""))
-Bbis <- plot_grid((plot_icp_CD8_PBvsLN), ncol = 1, labels = c(""))
-
-E <- plot_grid((plot_icp_B_FL),plot_icp_B_DLBCL, ncol = 2, labels = c(""))
 
 
-Figure_3_Suppl <- plot_grid(
-  plot_grid(Abis, ncol = 1, labels = c("A")), 
-  plot_grid(Bbis, ncol = 1, labels = c("B")),
-  plot_grid(E, ncol = 1, labels = c("")),
-  nrow=3 )
+E_suppl <- plot_grid((plot_icp_CD4_PBvsLN), ncol = 1, labels = c(""))
+F_suppl <- plot_grid((plot_icp_CD8_PBvsLN), ncol = 1, labels = c(""))
+
+# E <- plot_grid((plot_icp_B_FL),plot_icp_B_DLBCL, ncol = 2, labels = c(""))
+
+Figure_3_Suppl<- plot_grid(
+  plot_grid(AB_suppl, ncol = 1, labels = c("")),  # Deuxième ligne
+  plot_grid(C_suppl, ncol = 1, labels = c("")),
+  plot_grid(D_suppl, ncol = 1, labels = c("")),
+  plot_grid(E_suppl, ncol = 1, labels = c("E")),
+  plot_grid(F_suppl, ncol = 1, labels = c("F")),
+  
+  nrow=5 )
 
 print(Figure_3_Suppl)
+
 ggsave(
-  filename = "/run/user/309223354/gvfs/smb-share:server=crct-share.inserm.lan,share=crct09/Paul/Platforme_paper/Figure/Figure2/Figure_3_Suppl.png",
+  filename = "/run/user/309223354/gvfs/smb-share:server=crct-share.inserm.lan,share=crct09/Paul/Platforme_paper/Figure/Figure3/Figure_3_Suppl.png",
   plot = Figure_3_Suppl,
   device = "png",
   width = 32,        # largeur A4 en cm
-  height = 20 ,     # hauteur A4 en cm
+  height = 40 ,     # hauteur A4 en cm
   units = "cm",
   dpi = 300
 )
