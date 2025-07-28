@@ -25,7 +25,7 @@ Condition = "Response_type_total"
 
 #### Choix des Combos ####
 sample_list <- data_talyies_full %>% 
-  filter(Day == "D6", Disease %in% c("FL","DLBCL","tFL")) %>% 
+  dplyr::filter(Day == "D6", Disease %in% c("FL","DLBCL","tFL")) %>% 
   distinct(Sample_code) 
 
 table_treatment <- read_csv('Paper_platforme/liste_combo.csv') %>%
@@ -36,16 +36,16 @@ table_treatment <- read_csv('Paper_platforme/liste_combo.csv') %>%
     paste(na.omit(row), collapse = " + ")
   })) %>% 
   select(Treatment_reorder,Treatment,Treatment_type,Treatment_Cat) %>% 
-  # filter(!grepl("TCB 10 nM", Treatment_reorder)) %>% #Filter les Treatments
-  filter(!grepl("GA101", Treatment_reorder) & !grepl("IL2v", Treatment_reorder) & !grepl("TCB 10 nM", Treatment_reorder) 
-         &  !grepl("ZB2", Treatment_reorder) ) %>% #Filter les Treatments
+  # dplyr::filter(!grepl("TCB 10 nM", Treatment_reorder)) %>% #dplyr::filter les Treatments
+  dplyr::filter(!grepl("GA101", Treatment_reorder) & !grepl("IL2v", Treatment_reorder) & !grepl("TCB 10 nM", Treatment_reorder) 
+         &  !grepl("ZB2", Treatment_reorder) ) %>% #dplyr::filter les Treatments
   mutate(Treatment_reorder = factor(Treatment_reorder, levels = sort(unique(Treatment_reorder)))) 
 
 all_combinations <- crossing(sample_list$Sample_code, table_treatment$Treatment_reorder) %>% 
   rename(Sample_code = 'sample_list$Sample_code', Treatment_reorder = 'table_treatment$Treatment_reorder') %>% 
   left_join(table_treatment,relationship = "many-to-many") %>% 
   left_join(data_sample_info_complete) %>% 
-  filter(Disease %in% c("FL","DLBCL","tFL") & Screening == TRUE) %>% 
+  dplyr::filter(Disease %in% c("FL","DLBCL","tFL") & Screening == TRUE) %>% 
   select(Treatment,Sample_code,Treatment_reorder,Treatment_type,Treatment_Cat) %>% 
   mutate(Treatment_Cat = factor(Treatment_Cat, levels = (c("UT","αCD20-TCB","Inhibiteur_CP","Co_Activator","ADC"))))
 }
@@ -56,10 +56,10 @@ all_combinations <- crossing(sample_list$Sample_code, table_treatment$Treatment_
   data_treatment <- data_talyies_full %>%
     select(Treatment, Disease, B_cell_depletion_total, Sample_code, Day, !!sym(Condition),Origin,Response_type_total) %>%
     mutate(B_cell_depletion_total = replace(B_cell_depletion_total, B_cell_depletion_total == "", NA)) %>%
-    filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
+    dplyr::filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
     right_join(all_combinations, by = c("Sample_code", "Treatment")) %>%
     distinct() %>% 
-    filter(Treatment_type == "Single")
+    dplyr::filter(Treatment_type == "Single")
   
   # Compter le nombre de NA dans la colonne Treatment pour chaque Sample_code
   na_count_sample <- data_treatment %>%
@@ -75,7 +75,7 @@ all_combinations <- crossing(sample_list$Sample_code, table_treatment$Treatment_
   # %>% 
   #   left_join(na_counts_treatment) %>% 
   #   left_join(na_count_sample) %>% 
-  #   filter(na_count_sample < 48  & na_count_treatment < 30  )
+  #   dplyr::filter(na_count_sample < 48  & na_count_treatment < 30  )
   
   ordered_samples <- levels(data_talyies_full$Sample_code)
   # Trier les Sample_code par nombre décroissant de NA
@@ -86,7 +86,7 @@ all_combinations <- crossing(sample_list$Sample_code, table_treatment$Treatment_
 
   # Réorganiser data_treatment selon l'ordre des Sample_code
   data_treatment_ordered <- data_treatment_filtered %>%
-    filter(Sample_code %in% ordered_samples) %>%
+    dplyr::filter(Sample_code %in% ordered_samples) %>%
     mutate(Sample_code = factor(Sample_code, levels = ordered_samples))
   
   # Créer la heatmap avec les Sample_code triés
@@ -124,10 +124,10 @@ all_combinations <- crossing(sample_list$Sample_code, table_treatment$Treatment_
 #### Figure 8 Heatmaps ####
 {data_heatmap <- data_talyies_full %>%
   select(Treatment, Disease, Sample_code, Day, all_of(conditions)) %>%
-  filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
+  dplyr::filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
   right_join(all_combinations, by = c("Sample_code", "Treatment")) %>%
-  filter(Treatment_type == "Single") %>%
-  filter(B_cell_depletion_total > -50) %>%
+  dplyr::filter(Treatment_type == "Single") %>%
+  dplyr::filter(B_cell_depletion_total > -50) %>%
   pivot_longer(cols = all_of(conditions), names_to = "Condition", values_to = "value") %>%
   mutate(value = as.numeric(value),
          Treatment_reorder = factor(Treatment, levels = rev(sort(unique(Treatment))))) %>%
@@ -139,7 +139,7 @@ ncol_plot <- 4
 
 for (i in seq_along(conditions)) {
   cond <- conditions[i]
-  plot_data <- filter(data_heatmap, Condition == cond) %>% 
+  plot_data <- dplyr::filter(data_heatmap, Condition == cond) %>% 
     group_by(Treatment_Cat,Sample_code) %>% 
     mutate(value_mean = mean(value, na.rm = TRUE))
     
@@ -211,12 +211,12 @@ ggsave(
 data_treatment <- data_talyies_full %>%
   select(Treatment, Disease, Sample_code, Day, !!sym(Condition),B_cell_depletion_total) %>%
   mutate(!!sym(Condition) := replace(!!sym(Condition), !!sym(Condition) == "", NA)) %>%
-  filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
+  dplyr::filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
   right_join(all_combinations, by = c("Sample_code", "Treatment")) %>%
   distinct() %>% 
-  filter(Treatment_type == "Single") %>% 
+  dplyr::filter(Treatment_type == "Single") %>% 
   mutate(value = (!!sym(Condition))) %>% 
-  filter(!Sample_code %in% c("tFL1_LN1","DLBCL5_PB1","tFL5_PB1"))
+  dplyr::filter(!Sample_code %in% c("tFL1_LN1","DLBCL5_PB1","tFL5_PB1"))
 
 # Créer la heatmap avec les valeurs normalisées
 heatmap_Condition <- ggplot(data_treatment, aes(x = Sample_code,
@@ -260,15 +260,15 @@ print(heatmap_Condition)
 data_treatment <- data_talyies_full %>%
   select(Treatment, Disease, Sample_code, Day, !!sym(Condition),B_cell_depletion_total) %>%
   mutate(!!sym(Condition) := replace(!!sym(Condition), !!sym(Condition) == "", NA)) %>%
-  filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
+  dplyr::filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
   right_join(all_combinations, by = c("Sample_code", "Treatment")) %>%
   distinct() %>% 
-  filter(Treatment_type == "Single")
+  dplyr::filter(Treatment_type == "Single")
 
 data_treatment_normalized <- data_treatment %>%
   left_join(
     data_treatment %>%
-      filter(Treatment_reorder == "UT") %>%
+      dplyr::filter(Treatment_reorder == "UT") %>%
       select(Sample_code, UT_value = !!sym(Condition)),
     by = "Sample_code"
   ) %>%
@@ -315,10 +315,10 @@ print(heatmap_Condition)
 data_treatment <- data_talyies_full %>%
   select(Treatment, Disease, Sample_code, Day, !!sym(Condition),B_cell_depletion_total) %>%
   mutate(!!sym(Condition) := replace(!!sym(Condition), !!sym(Condition) == "", NA)) %>%
-  filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
+  dplyr::filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
   right_join(all_combinations, by = c("Sample_code", "Treatment")) %>%
   distinct() %>% 
-  filter(Treatment_type == "Single")
+  dplyr::filter(Treatment_type == "Single")
 
 # Calculer le z-score pour chaque Sample
 data_treatment_z <- data_treatment %>% #Zscore by Sample
@@ -360,11 +360,11 @@ print(heatmap_Condition)
 data_treatment <- data_talyies_full %>%
   select(Treatment, Disease, Sample_code, Day, !!sym(Condition),B_cell_depletion_total) %>%
   mutate(!!sym(Condition) := replace(!!sym(Condition), !!sym(Condition) == "", NA)) %>%
-  filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
+  dplyr::filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
   right_join(all_combinations, by = c("Sample_code", "Treatment")) %>%
   distinct() %>% 
-  filter(grepl("CD20-TCB",Treatment)) 
-  # filter(Treatment == "Single")
+  dplyr::filter(grepl("CD20-TCB",Treatment)) 
+  # dplyr::filter(Treatment == "Single")
 
 # Calculer le z-score pour chaque Sample
 data_treatment_z <- data_treatment %>% #Zscore by Sample
@@ -405,7 +405,7 @@ print(heatmap_Condition)
 
 data_treatment <- data_talyies_full %>%
   select(Treatment, Disease, Sample_code, Day, !!sym(Condition),B_cell_depletion_total) %>%
-  filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
+  dplyr::filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
   right_join(all_combinations, by = c("Sample_code", "Treatment")) %>%
   distinct()
 
@@ -413,12 +413,12 @@ data_treatment <- data_talyies_full %>%
 data_area_normalized <- data_treatment %>%
   left_join(
     data_treatment %>%
-      filter(Treatment_reorder == "UT") %>%
+      dplyr::filter(Treatment_reorder == "UT") %>%
       select(Sample_code, UT_Area_mean = Area_mean),
     by = "Sample_code"
   ) %>%
   mutate(normalized_Area_mean = (Area_mean / UT_Area_mean)) %>%
-  filter(B_cell_depletion_total > -50 | normalized_Area_mean < 2)
+  dplyr::filter(B_cell_depletion_total > -50 | normalized_Area_mean < 2)
 
 # Calculer la corrélation de Pearson entre Area et B_Cell_Depletion
 correlation_result <- cor.test(data_area_normalized$normalized_Area_mean, data_area_normalized$B_cell_depletion_total,method = "pearson", use = "pairwise.complete.obs", alternative = "two.sided")
@@ -464,19 +464,19 @@ print(correlation_area_plot)
 
 data_treatment <- data_talyies_full %>%
   select(Treatment, Disease, Sample_code, Day, !!sym(Condition),B_cell_depletion_total) %>%
-  filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
+  dplyr::filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
   right_join(all_combinations, by = c("Sample_code", "Treatment")) %>%
   distinct()
 
 data_normalized <- data_treatment %>%
   left_join(
     data_treatment %>%
-      filter(Treatment_reorder == "UT") %>%
+      dplyr::filter(Treatment_reorder == "UT") %>%
       select(Sample_code, UT_value = !!sym(Condition)),
     by = "Sample_code"
   ) %>%
   mutate(normalized_value = (!!sym(Condition) / UT_value)) %>%
-  filter(B_cell_depletion_total > -50 & !!sym(Condition) < 110  )
+  dplyr::filter(B_cell_depletion_total > -50 & !!sym(Condition) < 110  )
 
 # Calculer la corrélation de Pearson entre Area et B_Cell_Depletion
 correlation_result <- cor.test(data_normalized$normalized_value, data_normalized$B_cell_depletion_total)
@@ -517,16 +517,16 @@ filter_value = 10000
 
 data_treatment <- data_talyies_full %>%
   select(Treatment, Disease, Sample_code, Day, !!sym(Condition),B_cell_depletion_total) %>%
-  filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
+  dplyr::filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
   right_join(all_combinations, by = c("Sample_code", "Treatment")) %>%
-  filter(Treatment == "αTIGIT 10 µg/mL") %>% 
-  # filter(Treatment_type == "Single") %>% 
+  dplyr::filter(Treatment == "αTIGIT 10 µg/mL") %>% 
+  # dplyr::filter(Treatment_type == "Single") %>% 
   distinct()
 
 data_unnormalized <- data_treatment %>%
   mutate(value = (!!sym(Condition))) %>%
-  filter(B_cell_depletion_total > -50) %>% 
-  filter(value < filter_value)
+  dplyr::filter(B_cell_depletion_total > -50) %>% 
+  dplyr::filter(value < filter_value)
 
 # Calculer la corrélation de Pearson entre Area et B_Cell_Depletion
 
@@ -567,9 +567,9 @@ library(dplyr)
 # Préparer les données
 data_treatment <- data_talyies_full %>%
   select(-...1) %>% 
-  filter(Day %in% c("D6","D0","D3"), Disease %in% c("FL", "DLBCL", "tFL")) %>%
+  dplyr::filter(Day %in% c("D6","D0","D3"), Disease %in% c("FL", "DLBCL", "tFL")) %>%
   right_join(all_combinations, by = c("Sample_code", "Treatment")) %>%
-  filter(B_cell_depletion_total > -50) %>%
+  dplyr::filter(B_cell_depletion_total > -50) %>%
   distinct()
 
 # Sélectionner uniquement les colonnes numériques pour le calcul de la corrélation
@@ -603,24 +603,24 @@ print(correlation_results)
 data_treatment <- data_talyies_full %>%
   select(Treatment, Disease, Sample_code, Day, !!sym(Condition),B_cell_depletion_total) %>%
   mutate(!!sym(Condition) := replace(!!sym(Condition), !!sym(Condition) == "", NA)) %>%
-  filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
+  dplyr::filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
   right_join(all_combinations, by = c("Sample_code", "Treatment")) %>%
   distinct()
 # %>% 
-#   filter(grepl("GA101",Treatment_reorder)) 
-# # filter(Treatment == "Single")
+#   dplyr::filter(grepl("GA101",Treatment_reorder)) 
+# # dplyr::filter(Treatment == "Single")
 
 # Compter le nombre de NA dans la colonne Treatment pour chaque Sample_code
 No_data_sample_list <- data_treatment %>%
   group_by(Sample_code) %>%
   summarise(na_count_sample= sum(is.na(B_cell_depletion_total)),
             No_data_sample = ifelse(na_count_sample > (length(unique(data_treatment$Treatment_reorder))-2), TRUE, FALSE)) %>%
-  filter(No_data_sample == TRUE) %>% 
+  dplyr::filter(No_data_sample == TRUE) %>% 
   pull(Sample_code)
 
 # Calculer le z-score pour chaque Sample
 data_treatment_z <- data_treatment %>%
-  filter(!Sample_code %in% No_data_sample_list) %>% 
+  dplyr::filter(!Sample_code %in% No_data_sample_list) %>% 
   group_by(Sample_code) %>%
   mutate(z_score = scale(!!sym(Condition))) %>%
   ungroup()
@@ -655,16 +655,16 @@ print(heatmap_Condition)}
 #### HUIT Heatmaps Zscore ####
 {data_heatmap <- data_talyies_full %>%
   select(Treatment, Disease, Sample_code, Day, all_of(conditions)) %>%
-  filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
+  dplyr::filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
   right_join(all_combinations, by = c("Sample_code", "Treatment")) %>% 
-  filter(grepl("PD1",Treatment_reorder)) 
+  dplyr::filter(grepl("PD1",Treatment_reorder)) 
 
 # Compter le nombre de NA dans la colonne Treatment pour chaque Sample_code
 No_data_sample_list <- data_heatmap %>%
   group_by(Sample_code) %>%
   summarise(na_count_sample= sum(is.na(B_cell_depletion_total)),
             No_data_sample = ifelse(na_count_sample > (length(unique(data_heatmap$Treatment_reorder))-2), TRUE, FALSE)) %>%
-  filter(No_data_sample == TRUE) %>% 
+  dplyr::filter(No_data_sample == TRUE) %>% 
   pull(Sample_code)
 
 data_heatmap_pivot <- data_heatmap %>% 
@@ -679,9 +679,9 @@ ncol_plot <- 4
 #Creation Heatmaps
 for (i in seq_along(conditions)) {
   cond <- conditions[i]
-  plot_data <- filter(data_heatmap_pivot, Condition == cond) %>% 
+  plot_data <- dplyr::filter(data_heatmap_pivot, Condition == cond) %>% 
     group_by(Treatment_reorder) %>%
-    filter(!Sample_code %in% No_data_sample_list) %>% 
+    dplyr::filter(!Sample_code %in% No_data_sample_list) %>% 
     mutate(z_score = scale(value),
            Sample_code = factor(Sample_code, levels = Sample_order)) %>%
     ungroup()
@@ -747,10 +747,10 @@ ggsave(
 #### HUIT Heatmaps Zscore Categorie treatment ####
 {data_heatmap <- data_talyies_full %>%
   select(Treatment, Disease, Sample_code, Day, all_of(conditions)) %>%
-  filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
+  dplyr::filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
   right_join(all_combinations, by = c("Sample_code", "Treatment")) %>% 
   distinct() %>% 
-  filter(Treatment_type == "Single")
+  dplyr::filter(Treatment_type == "Single")
 
 
 
@@ -759,7 +759,7 @@ No_data_sample_list <- data_heatmap %>%
   group_by(Sample_code) %>%
   summarise(na_count_sample= sum(is.na(B_cell_depletion_total)),
             No_data_sample = ifelse(na_count_sample > (length(unique(data_heatmap$Treatment_reorder))-2), TRUE, FALSE)) %>%
-  filter(No_data_sample == TRUE) %>% 
+  dplyr::filter(No_data_sample == TRUE) %>% 
   pull(Sample_code)
 
 data_heatmap_pivot <- data_heatmap %>% 
@@ -774,11 +774,11 @@ ncol_plot <- 4
 #Creation Heatmaps
 for (i in seq_along(conditions)) {
   cond <- conditions[i]
-  plot_data <- filter(data_heatmap_pivot, Condition == cond) %>% 
+  plot_data <- dplyr::filter(data_heatmap_pivot, Condition == cond) %>% 
     group_by(Treatment_Cat,Sample_code) %>% 
     mutate(value_mean = mean(value, na.rm = TRUE)) %>% 
     group_by(Sample_code) %>%
-    filter(!Sample_code %in% No_data_sample_list) %>% 
+    dplyr::filter(!Sample_code %in% No_data_sample_list) %>% 
     mutate(z_score = scale(value_mean),
            Sample_code = factor(Sample_code, levels = Sample_order)) %>%
     ungroup()
@@ -851,11 +851,11 @@ cal_z_score <- function(x){
   filename = "Paper_platforme/Figure/Figure_5_Heatmap/Clusters_by_Treatment_type.png"
   data_treatment_cat <- data_talyies_full %>%
   mutate(B_cell_depletion_total = replace(B_cell_depletion_total, B_cell_depletion_total == "", NA)) %>%
-  filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
+  dplyr::filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
   right_join(all_combinations, by = c("Sample_code", "Treatment")) %>%
-    filter(Treatment_type == "Single" & !Sample_code %in% c("DLBCL1_LN1","FL10_PB1")) %>% 
+    dplyr::filter(Treatment_type == "Single" & !Sample_code %in% c("DLBCL1_LN1","FL10_PB1")) %>% 
   distinct() %>% 
-  filter(Treatment_type == "Single" & Treatment_Cat != "UT")
+  dplyr::filter(Treatment_type == "Single" & Treatment_Cat != "UT")
 
 #Annotation Samples
   Metadata_treatment_matrix <- data_treatment_cat %>%
@@ -867,7 +867,7 @@ cal_z_score <- function(x){
   
   #Transformation en Matrice
   data_treatment_matrix <- data_treatment_cat %>% select(Sample_code,Treatment_Cat,B_cell_depletion_total) %>%
-    filter(B_cell_depletion_total > -50 & !Sample_code %in% c("FL3_PB1","FL2_PB1")) %>% 
+    dplyr::filter(B_cell_depletion_total > -50 & !Sample_code %in% c("FL3_PB1","FL2_PB1")) %>% 
     group_by(Treatment_Cat,Sample_code) %>% 
     summarize(B_cell_depletion_total = mean(B_cell_depletion_total))
   
@@ -943,13 +943,13 @@ Control <- "αTIGIT 1 µg/mL"
 data_treatment_classification <- data_talyies_full %>%
   select(Treatment, Disease, Sample_code, Day, !!sym(Condition),B_cell_depletion_total,Response_type_total) %>%
   mutate(!!sym(Condition) := replace(!!sym(Condition), !!sym(Condition) == "", NA)) %>%
-  filter(!Sample_code %in% c("DLBCL1_LN1","FL10_PB1")) %>%
-  filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL") ) %>%
+  dplyr::filter(!Sample_code %in% c("DLBCL1_LN1","FL10_PB1")) %>%
+  dplyr::filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL") ) %>%
   right_join(all_combinations, by = c("Sample_code", "Treatment")) %>%
-  filter(grepl(Control,Treatment_reorder)) %>%
+  dplyr::filter(grepl(Control,Treatment_reorder)) %>%
   left_join(df_Cluster_response_cat, by = "Sample_code") %>%
-  # filter(Cluster_response_cat %in% Cluster_response_cat_filter) %>% 
-  filter(!is.na(!!sym(Condition)))
+  # dplyr::filter(Cluster_response_cat %in% Cluster_response_cat_filter) %>% 
+  dplyr::filter(!is.na(!!sym(Condition)))
 
 
 model <- lmer(B_cell_depletion_total ~ Treatment_reorder + (1|Sample_code), 
