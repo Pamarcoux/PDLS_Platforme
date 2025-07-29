@@ -13,8 +13,6 @@ library(ggpubr)
 library(grid)
   
   
-
-
 sample_colors_df <- tibble(Sample_code = names(sample_colors_all),
                            sample_color = unname(sample_colors_all))
 
@@ -848,7 +846,7 @@ cal_z_score <- function(x){
   (x)}
 
 {  
-  filename = "Paper_platforme/Figure/Figure_5_Heatmap/Clusters_by_Treatment_type.png"
+  # filename = "Paper_platforme/Figure/Figure_5_Heatmap/Clusters_by_Treatment_type.png"
   data_treatment_cat <- data_talyies_full %>%
   mutate(B_cell_depletion_total = replace(B_cell_depletion_total, B_cell_depletion_total == "", NA)) %>%
   dplyr::filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
@@ -928,9 +926,11 @@ df_Cluster_response_cat <- data.frame(
   Sample_code = names(clusters),
   Cluster_response_cat = unlist(clusters), row.names = NULL) %>% 
   mutate(Cluster_response_cat = recode(Cluster_response_cat, 
-                                       `1` = "ADC_TCB_Medium_responders", 
-                                       `2` = "Global_low_responders", 
-                                       `3` = "TCB_High_Responders")) 
+                                       `1` = "Medium_Responder", 
+                                       `2` = "Low_Responder", 
+                                       `3` = "High_Responder")) 
+
+write.csv(df_Cluster_response_cat,'Sample_Response_cluster.csv')
 
 
 ####Comparaison stat treatment #####
