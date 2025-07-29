@@ -1284,12 +1284,12 @@ B <- plot_grid((Plot_PDLS_area_FL ),(Plot_PDLS_area_DLBCL +
                  labs(title = "tFL/DLBCL",
                       y ="")), ncol = 2, labels = c(""))
 
-C <- plot_grid((Plot_PDLS_viability_FL ),(Plot_PDLS_viability_DLBCL +
+D <- plot_grid((Plot_PDLS_viability_FL ),(Plot_PDLS_viability_DLBCL +
                                                            labs(title = "tFL/DLBCL",
                                                                 y="")), ncol = 2, labels = c(""))
 
 
-D <- plot_grid((Plot_PDLS_number_FL ),(Plot_PDLS_number_DLBCL +
+C <- plot_grid((Plot_PDLS_number_FL ),(Plot_PDLS_number_DLBCL +
                                                                 labs(title = "tFL/DLBCL",
                                                                      y="")), ncol = 2, labels = c(""))
 

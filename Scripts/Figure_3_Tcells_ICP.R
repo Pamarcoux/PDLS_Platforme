@@ -875,15 +875,19 @@ E_suppl <- plot_grid((plot_icp_CD4_PBvsLN), ncol = 1, labels = c(""))
 F_suppl <- plot_grid((plot_icp_CD8_PBvsLN), ncol = 1, labels = c(""))
 
 # E <- plot_grid((plot_icp_B_FL),plot_icp_B_DLBCL, ncol = 2, labels = c(""))
-
-Figure_3_Suppl<- plot_grid(
+Figure_3_Suppl_RFI<- plot_grid(
   plot_grid(AB_suppl, ncol = 1, labels = c("")),  # Deuxième ligne
   plot_grid(C_suppl, ncol = 1, labels = c("")),
   plot_grid(D_suppl, ncol = 1, labels = c("")),
-  plot_grid(E_suppl, ncol = 1, labels = c("E")),
-  plot_grid(F_suppl, ncol = 1, labels = c("F")),
+  nrow=3 )
+
+
+
+Figure_3_Suppl<- plot_grid(
+  plot_grid(E_suppl, ncol = 1, labels = c("A")),
+  plot_grid(F_suppl, ncol = 1, labels = c("B")),
   
-  nrow=5 )
+  nrow=2 )
 
 print(Figure_3_Suppl)
 
@@ -891,8 +895,8 @@ ggsave(
   filename = "/run/user/309223354/gvfs/smb-share:server=crct-share.inserm.lan,share=crct09/Paul/Platforme_paper/Figure/Figure3/Figure_3_Suppl.png",
   plot = Figure_3_Suppl,
   device = "png",
-  width = 32,        # largeur A4 en cm
-  height = 40 ,     # hauteur A4 en cm
+  width = 29,        # largeur A4 en cm
+  height = 20 ,     # hauteur A4 en cm
   units = "cm",
   dpi = 300
 )
