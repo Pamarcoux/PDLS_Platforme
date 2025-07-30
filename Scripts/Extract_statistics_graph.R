@@ -1,4 +1,4 @@
-extract_statistics_day_columns <- function(data, x_var = "Day", y_var = "value", scale_factor = 1) {
+extract_statistics_day_columns <- function(data, x_var = "Origin", y_var = "value", scale_factor = 1) {
   
   require(dplyr)
   require(ggpubr)
@@ -103,8 +103,8 @@ extract_statistics_day_columns <- function(data, x_var = "Day", y_var = "value",
   
   return(result_table)
 }
-data_sample_plot_population1_D0_D3_D6_stat <- data_sample_plot_populationCD3_D0_D3 %>% 
-  filter(variable == "CD3\nEffector\nMemory")
+data_sample_plot_population1_D0_D3_D6_stat <- data_sample_plot_population2_D0_D3 %>% 
+  filter(variable == "Monocytes")
 results_table <- extract_statistics_day_columns(data_sample_plot_population1_D0_D3_D6_stat,y_var = "Proportion")
 
 # Afficher les résultats

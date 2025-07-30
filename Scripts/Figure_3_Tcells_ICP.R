@@ -14,6 +14,7 @@ library(magick)
 library(RColorBrewer)
 library(scales)
 
+source("~/Postdoc/R/GlofiResistance/00_Metadata_Talyies.R")
 
 ###FL####
 ##### Plot ICP FL CD4 ####
@@ -62,7 +63,7 @@ for (i in (1:2)) {
     labs(
       title = "FL",  # Titre du graphique
       x = "",  # Légende de l'axe X
-      y = "%ICP+ CD4+ T-cells",  # Légende de l'axe Y
+      y = "% of CD4+ T-cells",  # Légende de l'axe Y
       fill = ""  # Titre de la légende
     ) +
     theme_custom()+
@@ -122,7 +123,7 @@ for (i in (1:2)) {
     labs(
       title = "FL",  # Titre du graphique
       x = "",  # Légende de l'axe X
-      y = "%ICP+ CD8+ T-cells",  # Légende de l'axe Y
+      y = "% of CD8+ T-cells",  # Légende de l'axe Y
       fill = ""  # Titre de la légende
     ) +
     theme_custom()+
@@ -369,7 +370,7 @@ for (i in (1:2)) {
     labs(
       title = "tFL/DLBCL",  # Titre du graphique
       x = "",  # Légende de l'axe X
-      y = "%ICP+ CD4+ T-cells",  # Légende de l'axe Y
+      y = "% of CD4+ T-cells",  # Légende de l'axe Y
       fill = ""  # Titre de la légende
     ) +
     theme_custom()+
@@ -622,7 +623,7 @@ for (i in (1:length(variable))) {
     labs(
       title = "tFL/DLBCL",  # Titre du graphique
       x = "",  # Légende de l'axe X
-      y = "%ICP+\n CD22+ B-cells",  # Légende de l'axe Y
+      y = "% of CD22+ B-cells",  # Légende de l'axe Y
       fill = ""  # Titre de la légende
     ) +
     theme_custom()+
@@ -679,8 +680,8 @@ for (i in seq_along(unique(data_correlation_icp_CD4$variable))) {
     scale_fill_manual(values = sample_colors_all) +
     labs(title = paste0(population_name),
          subtitle = paste0("R = ",r_value,"\n𝑝 = ",p_value),
-         x = "%ICP+ \n CD4+ T-cells  \n D0 (Tumor)",
-         y="%ICP+ CD4+ T-cells \n D3 (PDLS)")+
+         x = "% of \n CD4+ T-cells  \n D0 (Tumor)",
+         y="% of CD4+ T-cells \n D3 (PDLS)")+
     theme_custom() +
     theme(legend.position = "none",
           plot.title = element_text(hjust = 0)) # Ajuster la taille du texte de l'axe y
@@ -738,8 +739,8 @@ for (i in seq_along(unique(data_correlation_icp_CD8$variable))) {
     scale_fill_manual(values = sample_colors_all) +
     labs(title = paste0(population_name),
          subtitle = paste0("R = ",r_value,"\n𝑝 = ",p_value),
-         x = "%ICP+ \n CD8+ T-cells  \n D0 (Tumor)",
-         y="%ICP+ CD8+ T-cells \n D3 (PDLS)")+
+         x = "% of \n CD8+ T-cells  \n D0 (Tumor)",
+         y="% of CD8+ T-cells \n D3 (PDLS)")+
     theme_custom() +
     theme(legend.position = "none",
           plot.title = element_text(hjust = 0)) 

@@ -71,7 +71,7 @@ Plot_PDLS_area_LNvPBMC <- ggplot(data_sample_plot_area, aes(x = Day, y = value/1
 
 ##### Plot LNvPBMC Via #####
 data_sample_plot_viability<- data_talyies_LN_PBMC %>% select(Origin,Disease,Treatment,Sample_code,B_cell_depletion_total,Day,Viability) %>% 
-  filter(Day %in% c("D3","D6") & Treatment == "UT") %>% 
+  filter(Day %in% c("D0","D3","D6") & Treatment == "UT") %>% 
   select(Sample_code,B_cell_depletion_total,Day,Viability,Disease,Origin) %>% 
   melt(id.vars = c("B_cell_depletion_total","Day","Sample_code","Disease","Origin")) %>% 
   mutate(variable = gsub("_Per", "", variable)) %>% 
