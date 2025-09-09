@@ -12,8 +12,8 @@ data_treatment <- data_talyies_full %>%
   mutate(!!sym(Condition) := replace(!!sym(Condition), !!sym(Condition) == "", NA)) %>%
   filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL") & B_cell_depletion_total > -40) %>%
   right_join(all_combinations, by = c("Sample_code", "Treatment")) %>% 
-  # filter(Treatment_type == "Single" & !Sample_code %in% c("DLBCL1_LN1","FL10_PB1"))
-  filter(!Sample_code %in% c("DLBCL1_LN1","FL10_PB1"))
+  filter(Treatment_type == "Single" & !Sample_code %in% c("DLBCL1_LN1","FL10_PB1"))
+  # filter(!Sample_code %in% c("DLBCL1_LN1","FL10_PB1"))
   # filter(grepl("TCB 0,01 nM",Treatment_reorder))
 
 length(setdiff(data_talyies_full$Sample_code,data_treatment$Sample_code))

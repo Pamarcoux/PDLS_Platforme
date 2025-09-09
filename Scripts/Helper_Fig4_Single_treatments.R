@@ -21,36 +21,12 @@
                   "TNFa_normalized", "INFY_normalized", "GrzB_normalized", "IL8_normalized", "IL10_normalized")
   
   Condition = "B_cell_depletion_total"
-####Choix des Combos ####
-  sample_list <- data_talyies_full %>% 
-    filter(Day == "D6", Disease %in% c("FL","DLBCL","tFL")) %>% 
-    distinct(Sample_code) 
   
-  table_treatment <- read_csv('Paper_platforme/liste_combo.csv') %>%
-    mutate(Treatment = apply(.[c("A", "B", "C")], 1, function(row) {
-      paste(na.omit(row), collapse = " + ")
-    })) %>% 
-    mutate(Treatment_reorder = apply(.[c("E", "F", "G")], 1, function(row) {
-      paste(na.omit(row), collapse = " + ")
-    })) %>% 
-    select(Treatment_reorder,Treatment,Treatment_type,Treatment_Cat) %>% 
-    # filter(!grepl("TCB 10 nM", Treatment_reorder)) %>% #Filter les Treatments
-    filter(!grepl("GA101", Treatment_reorder) & !grepl("IL2v", Treatment_reorder) & !grepl("TCB 10 nM", Treatment_reorder) 
-           &  !grepl("ZB2", Treatment_reorder) ) %>% #Filter les Treatments
-    mutate(Treatment_reorder = factor(Treatment_reorder, levels = sort(unique(Treatment_reorder)))) 
-  
-  all_combinations <- crossing(sample_list$Sample_code, table_treatment$Treatment_reorder) %>% 
-    rename(Sample_code = 'sample_list$Sample_code', Treatment_reorder = 'table_treatment$Treatment_reorder') %>% 
-    left_join(table_treatment,relationship = "many-to-many") %>% 
-    left_join(data_sample_info_complete) %>% 
-    filter(Disease %in% c("FL","DLBCL","tFL") & Screening == TRUE) %>% 
-    select(Treatment,Sample_code,Treatment_reorder,Treatment_type,Treatment_Cat) %>% 
-    mutate(Treatment_Cat = factor(Treatment_Cat, levels = (c("UT","αCD20-TCB","Inhibiteur_CP","Co_Activator","ADC"))))
-  
-  }
 Name <- "All_samples"
 Disease_list <- c("FL","tFL","DLBCL")
 Origin_list <- c("PBMC","LN")
+
+}
 
 #####Histogram Depletion #####
 {Condition <- "Per_CD107a_CD8"

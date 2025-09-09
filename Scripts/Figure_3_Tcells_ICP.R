@@ -23,10 +23,14 @@ data_sample_plot_icp_CD4<- data_sample_plot_icp %>%
   filter(Pop == "CD3_CD4", Day %in% c("D0","D3")) %>% 
   select(Disease,Sample_code,B_cell_depletion_total,Day,Pop,LAG3_Per,TIM3_Per,PD1_Per,TIGIT_Per,CD28_Per,'41BB_Per') %>% 
   melt(id.vars = c("Disease","B_cell_depletion_total","Day","Pop","Sample_code")) %>% 
-  mutate(variable = gsub("_Per", "", variable))
+  mutate(variable = gsub("_Per", "", variable),
+         variable =recode(variable,
+                          PD1 = 'PD-1',
+                          LAG3 = 'LAG-3',
+                          TIM3 = 'TIM-3'))
 
 # # Identifier les Sample_code qui apparaissent à la fois pour D0 et D3
-samples_with_D0_D3_icp <- data_sample_plot_icp_CD4 %>% filter(variable == "PD1") %>%
+samples_with_D0_D3_icp <- data_sample_plot_icp_CD4 %>% filter(variable == "PD-1") %>%
   group_by(Sample_code) %>% filter(is.na(value) == FALSE) %>%
   filter(n_distinct(Day) == 2) %>%
   ungroup() %>% distinct(Sample_code) %>%
@@ -40,7 +44,7 @@ for (i in (1:2)) {
   if (i == 1) {
     variable_i <- c("41BB","CD28")
   } else {
-    variable_i <- c("LAG3", "PD1", "TIGIT","TIM3")
+    variable_i <- c("LAG-3", "PD-1", "TIGIT","TIM-3")
   }
   
   data_sample_plot_population_i <- data_sample_plot_icp_CD4 %>% 
@@ -83,10 +87,14 @@ data_sample_plot_icp_CD8<- data_sample_plot_icp %>%
   filter(Pop == "CD3_CD8", Day %in% c("D0","D3")) %>% 
   select(Disease,Sample_code,B_cell_depletion_total,Day,Pop,LAG3_Per,TIM3_Per,PD1_Per,TIGIT_Per,CD28_Per,'41BB_Per') %>% 
   melt(id.vars = c("Disease","B_cell_depletion_total","Day","Pop","Sample_code")) %>% 
-  mutate(variable = gsub("_Per", "", variable))
+  mutate(variable = gsub("_Per", "", variable),
+         variable =recode(variable,
+                          PD1 = 'PD-1',
+                          LAG3 = 'LAG-3',
+                          TIM3 = 'TIM-3'))
 
 # # Identifier les Sample_code qui apparaissent à la fois pour D0 et D3
-samples_with_D0_D3_icp <- data_sample_plot_icp_CD8 %>% filter(variable == "PD1") %>%
+samples_with_D0_D3_icp <- data_sample_plot_icp_CD8 %>% filter(variable == "PD-1") %>%
   group_by(Sample_code) %>% filter(is.na(value) == FALSE) %>%
   filter(n_distinct(Day) == 2) %>%
   ungroup() %>% distinct(Sample_code) %>%
@@ -100,7 +108,7 @@ for (i in (1:2)) {
   if (i == 1) {
     variable_i <- c("41BB","CD28")
   } else {
-    variable_i <- c("LAG3", "PD1", "TIGIT","TIM3")
+    variable_i <- c("LAG-3", "PD-1", "TIGIT","TIM-3")
   }
   
   data_sample_plot_population_i <- data_sample_plot_icp_CD8 %>% 
@@ -145,10 +153,14 @@ data_sample_plot_icp_CD4<- data_sample_plot_icp %>%
   filter(Pop == "CD3_CD4", Day %in% c("D0","D3")) %>% 
   select(Disease,Sample_code,B_cell_depletion_total,Day,Pop,LAG3_RFI,TIM3_RFI,PD1_RFI,TIGIT_RFI,CD28_RFI,'41BB_RFI') %>% 
   melt(id.vars = c("Disease","B_cell_depletion_total","Day","Pop","Sample_code")) %>% 
-  mutate(variable = gsub("_RFI", "", variable))
+  mutate(variable = gsub("_RFI", "", variable),
+         variable =recode(variable,
+                          PD1 = 'PD-1',
+                          LAG3 = 'LAG-3',
+                          TIM3 = 'TIM-3'))
 
 # Identifier les Sample_code qui apparaissent à la fois pour D0 et D3
-samples_with_D0_D3_icp <- data_sample_plot_icp_CD4 %>% filter(variable == "PD1") %>% 
+samples_with_D0_D3_icp <- data_sample_plot_icp_CD4 %>% filter(variable == "PD-1") %>% 
   group_by(Sample_code) %>% filter(is.na(value) == FALSE) %>%
   filter(n_distinct(Day) == 2) %>%
   ungroup() %>% distinct(Sample_code) %>% 
@@ -162,7 +174,7 @@ for (i in (1:2)) {
   if (i == 1) {
     variable_i <- c("41BB","CD28")
   } else {
-    variable_i <- c("LAG3", "PD1", "TIGIT","TIM3")
+    variable_i <- c("LAG-3", "PD-1", "TIGIT","TIM-3")
   }
   
   data_sample_plot_population_i <- data_sample_plot_icp_CD4 %>% 
@@ -208,10 +220,14 @@ data_sample_plot_icp_CD8<- data_sample_plot_icp %>%
   filter(Pop == "CD3_CD8", Day %in% c("D0","D3")) %>% 
   select(Disease,Sample_code,B_cell_depletion_total,Day,Pop,LAG3_RFI,TIM3_RFI,PD1_RFI,TIGIT_RFI,CD28_RFI,'41BB_RFI') %>% 
   melt(id.vars = c("Disease","B_cell_depletion_total","Day","Pop","Sample_code")) %>% 
-  mutate(variable = gsub("_RFI", "", variable))
+  mutate(variable = gsub("_RFI", "", variable),
+         variable =recode(variable,
+                          PD1 = 'PD-1',
+                          LAG3 = 'LAG-3',
+                          TIM3 = 'TIM-3'))
 
 # Identifier les Sample_code qui apparaissent à la fois pour D0 et D3
-samples_with_D0_D3_icp <- data_sample_plot_icp_CD8 %>% filter(variable == "PD1") %>% 
+samples_with_D0_D3_icp <- data_sample_plot_icp_CD8 %>% filter(variable == "PD-1") %>% 
   group_by(Sample_code) %>% filter(is.na(value) == FALSE) %>%
   filter(n_distinct(Day) == 2) %>%
   ungroup() %>% distinct(Sample_code) %>% 
@@ -225,7 +241,7 @@ for (i in (1:2)) {
   if (i == 1) {
     variable_i <- c("41BB","CD28")
   } else {
-    variable_i <- c("LAG3", "PD1", "TIGIT","TIM3")
+    variable_i <- c("LAG-3", "PD-1", "TIGIT","TIM-3")
   }
   
   data_sample_plot_population_i <- data_sample_plot_icp_CD8 %>% 
@@ -330,10 +346,14 @@ data_sample_plot_icp_CD4<- data_sample_plot_icp %>%
   filter(Pop == "CD3_CD4", Day %in% c("D0","D3")) %>% 
   select(Disease,Sample_code,B_cell_depletion_total,Day,Pop,LAG3_Per,TIM3_Per,PD1_Per,TIGIT_Per,CD28_Per,'41BB_Per') %>% 
   melt(id.vars = c("Disease","B_cell_depletion_total","Day","Pop","Sample_code")) %>% 
-  mutate(variable = gsub("_Per", "", variable))
+  mutate(variable = gsub("_Per", "", variable),
+         variable =recode(variable,
+                          PD1 = 'PD-1',
+                          LAG3 = 'LAG-3',
+                          TIM3 = 'TIM-3'))
 
 # # Identifier les Sample_code qui apparaissent à la fois pour D0 et D3
-samples_with_D0_D3_icp <- data_sample_plot_icp_CD4 %>% filter(variable == "PD1") %>%
+samples_with_D0_D3_icp <- data_sample_plot_icp_CD4 %>% filter(variable == "PD-1") %>%
   group_by(Sample_code) %>% filter(is.na(value) == FALSE) %>%
   filter(n_distinct(Day) == 2) %>%
   ungroup() %>% distinct(Sample_code) %>%
@@ -347,7 +367,7 @@ for (i in (1:2)) {
   if (i == 1) {
     variable_i <- c("41BB","CD28")
   } else {
-    variable_i <- c("LAG3", "PD1", "TIGIT","TIM3")
+    variable_i <- c("LAG-3", "PD-1", "TIGIT","TIM-3")
   }
   
   data_sample_plot_population_i <- data_sample_plot_icp_CD4 %>% 
@@ -394,10 +414,14 @@ data_sample_plot_icp_CD8<- data_sample_plot_icp %>%
   filter(Pop == "CD3_CD8", Day %in% c("D0","D3")) %>% 
   select(Disease,Sample_code,B_cell_depletion_total,Day,Pop,LAG3_Per,TIM3_Per,PD1_Per,TIGIT_Per,CD28_Per,'41BB_Per') %>% 
   melt(id.vars = c("Disease","B_cell_depletion_total","Day","Pop","Sample_code")) %>% 
-  mutate(variable = gsub("_Per", "", variable))
+  mutate(variable = gsub("_Per", "", variable),
+         variable =recode(variable,
+                          PD1 = 'PD-1',
+                          LAG3 = 'LAG-3',
+                          TIM3 = 'TIM-3'))
 
 # # Identifier les Sample_code qui apparaissent à la fois pour D0 et D3
-samples_with_D0_D3_icp <- data_sample_plot_icp_CD8 %>% filter(variable == "PD1") %>%
+samples_with_D0_D3_icp <- data_sample_plot_icp_CD8 %>% filter(variable == "PD-1") %>%
   group_by(Sample_code) %>% filter(is.na(value) == FALSE) %>%
   filter(n_distinct(Day) == 2) %>%
   ungroup() %>% distinct(Sample_code) %>%
@@ -411,7 +435,7 @@ for (i in (1:2)) {
   if (i == 1) {
     variable_i <- c("41BB","CD28")
   } else {
-    variable_i <- c("LAG3", "PD1", "TIGIT","TIM3")
+    variable_i <- c("LAG-3", "PD-1", "TIGIT","TIM-3")
   }
   
   data_sample_plot_population_i <- data_sample_plot_icp_CD8 %>% 
@@ -458,10 +482,15 @@ data_sample_plot_icp_CD4<- data_sample_plot_icp %>%
   filter(Pop == "CD3_CD4", Day %in% c("D0","D3")) %>% 
   select(Disease,Sample_code,B_cell_depletion_total,Day,Pop,LAG3_RFI,TIM3_RFI,PD1_RFI,TIGIT_RFI,CD28_RFI,'41BB_RFI') %>% 
   melt(id.vars = c("Disease","B_cell_depletion_total","Day","Pop","Sample_code")) %>% 
-  mutate(variable = gsub("_RFI", "", variable))
+  mutate(variable = gsub("_RFI", "", variable),
+         variable =recode(variable,
+                           PD1 = 'PD-1',
+                          LAG3 = 'LAG-3',
+                          TIM3 = 'TIM-3'))
+  
 
 # Identifier les Sample_code qui apparaissent à la fois pour D0 et D3
-samples_with_D0_D3_icp <- data_sample_plot_icp_CD4 %>% filter(variable == "PD1") %>% 
+samples_with_D0_D3_icp <- data_sample_plot_icp_CD4 %>% filter(variable == "PD-1") %>% 
   group_by(Sample_code) %>% filter(is.na(value) == FALSE) %>%
   filter(n_distinct(Day) == 2) %>%
   ungroup() %>% distinct(Sample_code) %>% 
@@ -475,7 +504,7 @@ for (i in (1:2)) {
   if (i == 1) {
     variable_i <- c("41BB","CD28")
   } else {
-    variable_i <- c("LAG3", "PD1", "TIGIT","TIM3")
+    variable_i <- c("LAG-3", "PD-1", "TIGIT","TIM-3")
   }
   
   data_sample_plot_population_i <- data_sample_plot_icp_CD4 %>% 
@@ -524,10 +553,14 @@ data_sample_plot_icp_CD8<- data_sample_plot_icp %>%
   filter(Pop == "CD3_CD8", Day %in% c("D0","D3")) %>% 
   select(Disease,Sample_code,B_cell_depletion_total,Day,Pop,LAG3_RFI,TIM3_RFI,PD1_RFI,TIGIT_RFI,CD28_RFI,'41BB_RFI') %>% 
   melt(id.vars = c("Disease","B_cell_depletion_total","Day","Pop","Sample_code")) %>% 
-  mutate(variable = gsub("_RFI", "", variable))
+  mutate(variable = gsub("_RFI", "", variable),
+         variable =recode(variable,
+                          PD1 = 'PD-1',
+                          LAG3 = 'LAG-3',
+                          TIM3 = 'TIM-3'))
 
 # Identifier les Sample_code qui apparaissent à la fois pour D0 et D3
-samples_with_D0_D3_icp <- data_sample_plot_icp_CD8 %>% filter(variable == "PD1") %>% 
+samples_with_D0_D3_icp <- data_sample_plot_icp_CD8 %>% filter(variable == "PD-1") %>% 
   group_by(Sample_code) %>% filter(is.na(value) == FALSE) %>%
   filter(n_distinct(Day) == 2) %>%
   ungroup() %>% distinct(Sample_code) %>% 
@@ -541,7 +574,7 @@ for (i in (1:2)) {
   if (i == 1) {
     variable_i <- c("41BB","CD28")
   } else {
-    variable_i <- c("LAG3", "PD1", "TIGIT","TIM3")
+    variable_i <- c("LAG-3", "PD-1", "TIGIT","TIM-3")
   }
   
   data_sample_plot_population_i <- data_sample_plot_icp_CD8 %>% 
@@ -646,7 +679,11 @@ data_sample_plot_icp_CD4<- data_sample_plot_icp %>%
   filter(Pop == "CD3_CD4", Day %in% c("D0","D3")) %>% 
   select(Disease,Sample_code,B_cell_depletion_total,Day,Pop,'41BB_Per',CD28_Per,LAG3_Per,PD1_Per,TIGIT_Per,TIM3_Per) %>% 
   melt(id.vars = c("Disease","B_cell_depletion_total","Day","Pop","Sample_code")) %>% 
-  mutate(variable = gsub("_Per", "", variable))
+  mutate(variable = gsub("_Per", "", variable),
+         variable =recode(variable,
+                          PD1 = 'PD-1',
+                          LAG3 = 'LAG-3',
+                          TIM3 = 'TIM-3'))
 
 data_correlation_icp_CD4 <- data_sample_plot_icp_CD4 %>% filter(Day %in% c("D0","D3")) %>% 
   group_by(Sample_code,Day) %>% 
@@ -705,7 +742,11 @@ data_sample_plot_icp_CD8<- data_sample_plot_icp %>%
   filter(Pop == "CD3_CD8", Day %in% c("D0","D3")) %>% 
   select(Disease,Sample_code,B_cell_depletion_total,Day,Pop,'41BB_Per',CD28_Per,LAG3_Per,PD1_Per,TIGIT_Per,TIM3_Per) %>% 
   melt(id.vars = c("Disease","B_cell_depletion_total","Day","Pop","Sample_code")) %>% 
-  mutate(variable = gsub("_Per", "", variable))
+  mutate(variable = gsub("_Per", "", variable),
+         variable =recode(variable,
+                          PD1 = 'PD-1',
+                          LAG3 = 'LAG-3',
+                          TIM3 = 'TIM-3'))
 
 data_correlation_icp_CD8 <- data_sample_plot_icp_CD8 %>% filter(Day %in% c("D0","D3")) %>% 
   group_by(Sample_code,Day) %>% 
@@ -774,7 +815,7 @@ Figure_3_total <- plot_grid(
   plot_grid(D, ncol = 1, labels = c("")),
   plot_grid(E, ncol = 1, labels = c("E")),
   plot_grid(F, ncol = 1, labels = c("F")),
-
+  rel_heights = c(0.9,0.9,0.9,1,1),
   nrow=5 )
 
 print(Figure_3_total)
@@ -784,7 +825,7 @@ ggsave(
   plot = Figure_3_total,
   device = "png",
   width = 32,        # largeur A4 en cm
-  height = 50 ,     # hauteur A4 en cm
+  height = 45 ,     # hauteur A4 en cm
   units = "cm",
   dpi = 300
 )
@@ -829,7 +870,11 @@ data_sample_plot_icp_CD4<- data_sample_plot_icp %>%
   filter(Pop == "CD3_CD4", Day %in% c("D0","D3")) %>% 
   select(Origin,Disease,Sample_code,B_cell_depletion_total,Day,Pop,LAG3_Per,TIM3_Per,PD1_Per,TIGIT_Per,CD28_Per) %>% 
   melt(id.vars = c("Disease","B_cell_depletion_total","Day","Pop","Sample_code","Origin")) %>% 
-  mutate(variable = gsub("_Per", "", variable))
+  mutate(variable = gsub("_Per", "", variable),
+         variable =recode(variable,
+                          PD1 = 'PD-1',
+                          LAG3 = 'LAG-3',
+                          TIM3 = 'TIM-3'))
 
 plot_icp_CD4_PBvsLN <- ggplot(data_sample_plot_icp_CD4, aes(x = Day, y = value,fill = Origin)) +
   geom_boxplot(position = position_dodge(0.8), outliers = FALSE, colour = "black", size = 0.5) +
@@ -852,7 +897,11 @@ data_sample_plot_icp_CD8<- data_sample_plot_icp %>%
   filter(Pop == "CD3_CD8", Day %in% c("D0","D3")) %>% 
   select(Origin,Disease,Sample_code,B_cell_depletion_total,Day,Pop,LAG3_Per,TIM3_Per,PD1_Per,TIGIT_Per,CD28_Per) %>% 
   melt(id.vars = c("Disease","B_cell_depletion_total","Day","Pop","Sample_code","Origin")) %>% 
-  mutate(variable = gsub("_Per", "", variable))
+  mutate(variable = gsub("_Per", "", variable),
+         variable =recode(variable,
+                          PD1 = 'PD-1',
+                          LAG3 = 'LAG-3',
+                          TIM3 = 'TIM-3'))
 
 plot_icp_CD8_PBvsLN <- ggplot(data_sample_plot_icp_CD8, aes(x = Day, y = value,fill = Origin)) +
   geom_boxplot(position = position_dodge(0.8), outliers = FALSE, colour = "black", size = 0.5) +

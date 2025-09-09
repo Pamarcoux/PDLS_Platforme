@@ -31,9 +31,9 @@ merged_data_facs <- merged_data_facs %>%
   rename("CD3" ='Alexa Fluor 700-A',
          "CD4"='APC-Cy7-A',
          "CD8"="BV421-A",
-         "LAG3"="PE-A",
-         "TIM3"="PECF 594-A",
-         "PD1"="BV605-A",
+         "LAG-3"="PE-A",
+         "TIM-3"="PECF 594-A",
+         "PD-1"="BV605-A",
          "TIGIT"="PerCP-Cy5-5-A",
          "41BB"="APC-A",
          "CD28"="FITC-A",
@@ -61,10 +61,10 @@ merged_data_facs$FlowSOM_metacluster_id <- factor(
 #####Plot Markers#####
 merged_data_facs_pivot <- merged_data_facs %>% 
   select(-CD3,-Aqua) %>% 
-  pivot_longer(cols = c("CD4", "CD8", "LAG3", "TIM3", "PD1", "TIGIT", "41BB", "CD28"),
+  pivot_longer(cols = c("CD4", "CD8", "LAG-3", "TIM-3", "PD-1", "TIGIT", "41BB", "CD28"),
                names_to = "Marker",
                values_to = "Expression") %>%
-  mutate(Marker = factor(Marker, levels = c("CD4", "CD8","41BB", "CD28", "LAG3", "TIM3", "PD1", "TIGIT")))
+  mutate(Marker = factor(Marker, levels = c("CD4", "CD8","41BB", "CD28", "LAG-3", "TIM-3", "PD-1", "TIGIT")))
 
 # Define the marker levels
 markers <- levels(merged_data_facs_pivot$Marker)
@@ -75,9 +75,9 @@ color_limits <- list(
   "CD8" = c(-100, 25000),
   "41BB" = c(-250, 5500),
   "CD28" = c(-800, 828000),
-  "LAG3" = c(-700, 3100),
-  "TIM3" = c(-700, 27000),
-  "PD1" = c(-250, NA),
+  "LAG-3" = c(-700, 3100),
+  "TIM-3" = c(-700, 27000),
+  "PD-1" = c(-250, NA),
   "TIGIT" = c(-400, 17300)
 )
 
@@ -145,13 +145,21 @@ tsne_clusters_plot <- tsnep + annotation_custom(
 
 
 ####HeatMap Cluster Talyies####
-marker_order = c("CD3","CD4","CD8","PD1","LAG3","TIGIT","TIM3")
+marker_order = c("CD3","CD4","CD8","PD-1","LAG-3","TIGIT","TIM-3")
 
 
 data_heatmap_cluster <- read.csv('~/Postdoc/R/Cyto_analysis/Data/Talyies/Metacluster_Box_Plots_Means.csv',sep=";") %>% 
   rename(Markers = Stats.channel,
          Mean = Mean.of.channel) %>% 
   dplyr::filter(Markers %in% c("CD3","CD4","CD8","PD1","LAG3","TIGIT","TIM3")) %>% 
+  mutate(Markers = recode(Markers,
+                          CD3 = "CD3",
+                          CD4 = "CD4",
+                          CD8 = "CD8",
+                          PD1 = "PD-1",
+                          LAG3 = "LAG-3",
+                          TIGIT = "TIGIT",
+                          TIM3 = "TIM-3")) %>%
   mutate(Markers = factor(Markers,
                            levels = rev(marker_order)),
          Population = factor(Population,
@@ -396,7 +404,7 @@ data_metacluster_responder <- data_metacluster_responder %>%
   ungroup()
 
 
-plot_barplot_reparition_responders <- ggplot(data_metacluster_responder, aes(x = Responder_Cluster, y = Normalized, fill = FlowSOM_metacluster_id)) +
+plot_barplot_reparition_responders <- ggplot(data_metacluster_responder, aes(x = Responder_Cluster, y = Normalized_Mean, fill = FlowSOM_metacluster_id)) +
   geom_bar(stat = "identity", color = "black", size = 0.25) + 
   scale_fill_manual(values = rev(hue_pal()(4)))+
   theme_blood()+

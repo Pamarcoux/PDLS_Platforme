@@ -1,4 +1,4 @@
-{library(tidyverse)
+library(tidyverse)
   library(dplyr)
   library(tidyr)
   library(stringr)
@@ -16,68 +16,30 @@
   
 source("~/Postdoc/R/GlofiResistance/00_Metadata_Talyies.R")
 
-####Open data and combo selection ####
-df_Cluster_response_cat <- read_csv('./Metadata/Sample_Response_cluster.csv')
-
-
-sample_list <- data_talyies_full %>% 
-  dplyr::filter(Day == "D6", Disease %in% c("FL","DLBCL","tFL")) %>% 
-  distinct(Sample_code) 
-
-table_treatment <- read_csv('Paper_platforme/liste_combo.csv') %>%
-  mutate(Treatment = apply(.[c("A", "B", "C")], 1, function(row) {
-    paste(na.omit(row), collapse = " + ")
-  })) %>% 
-  mutate(Treatment_reorder = apply(.[c("E", "F", "G")], 1, function(row) {
-    paste(na.omit(row), collapse = " + ")
-  })) %>% 
-  select(Treatment_reorder,Treatment,Treatment_type,Treatment_Cat) %>% 
-  # dplyr::filter(!grepl("TCB 10 nM", Treatment_reorder)) %>% #dplyr::filter les Treatments
-  dplyr::filter(!grepl("GA101", Treatment_reorder) & !grepl("IL2v", Treatment_reorder) & !grepl("TCB 10 nM", Treatment_reorder) 
-                &  !grepl("ZB2", Treatment_reorder) ) %>% #dplyr::filter les Treatments
-  mutate(Treatment_reorder = factor(Treatment_reorder, levels = sort(unique(Treatment_reorder)))) 
-
-all_combinations <- crossing(sample_list$Sample_code, table_treatment$Treatment_reorder) %>% 
-  rename(Sample_code = 'sample_list$Sample_code', Treatment_reorder = 'table_treatment$Treatment_reorder') %>% 
-  left_join(table_treatment,relationship = "many-to-many") %>% 
-  left_join(data_sample_info_complete) %>% 
-  dplyr::filter(Disease %in% c("FL","DLBCL","tFL") & Screening == TRUE) %>% 
-  select(Treatment,Sample_code,Treatment_reorder,Treatment_type,Treatment_Cat) %>% 
-  mutate(Treatment_Cat = factor(Treatment_Cat, levels = (c("UT","αCD20-TCB","Inhibiteur_CP","Co_Activator","ADC"))),
-         Treatment_reorder = gsub(",",".",Treatment_reorder),
-         Treatment_reorder = gsub("αCD19-41BBL 0.1795 µg/mL","αCD19-41BBL",Treatment_reorder),
-         Treatment_reorder = gsub("αCD19-CD28 0.1464 µg/mL","αCD19-CD28",Treatment_reorder),
-         Treatment_reorder = gsub("αPDL1 10 µg/mL","αPDL1",Treatment_reorder),
-         Treatment_reorder = gsub("αCD79-ct 1 µg/mL","αCD79-ct",Treatment_reorder),
-         Treatment_reorder = gsub("αCD79-MMAE 1 µg/mL","αCD79-MMAE",Treatment_reorder),
-         Treatment_reorder = gsub("αPD1-TIM3 1 µg/mL","αPD1-TIM3",Treatment_reorder),
-         )
-}
-
 ####Calcul the forest plot data ####
 #####All Samples####
-{Control <- "UT"
+Control <- "UT"
   # Cluster_response_cat_filter <- "ADC_TCB_Medium_responders"
   
   Condition = "B_cell_depletion_total"
   data_treatment <- data_talyies_full %>%
     select(Treatment, Disease, Sample_code, Day,B_cell_depletion_total,Condition) %>%
     mutate(!!sym(Condition) := replace(!!sym(Condition), !!sym(Condition) == "", NA)) %>%
-    filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL") & B_cell_depletion_total > -40) %>%
+    dplyr::filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL") & B_cell_depletion_total > -40) %>%
     right_join(all_combinations, by = c("Sample_code", "Treatment")) %>% 
-    # filter(Treatment_type == "Single" & !Sample_code %in% c("DLBCL1_LN1","FL10_PB1"))
-    filter(!Sample_code %in% c("DLBCL1_LN1","FL10_PB1"))
-  # filter(grepl("TCB 0,01 nM",Treatment_reorder))
+    # dplyr::filter(Treatment_type == "Single" & !Sample_code %in% c("DLBCL1_LN1","FL10_PB1"))
+    dplyr::filter(!Sample_code %in% c("DLBCL1_LN1","FL10_PB1"))
+  # dplyr::filter(grepl("TCB 0,01 nM",Treatment_reorder))
   
   ##With Cluster Classification
   # data_treatment <- data_talyies_full %>%
   #   select(Treatment, Disease, Sample_code, Day, !!sym(Condition),B_cell_depletion_total) %>%
   #   mutate(!!sym(Condition) := replace(!!sym(Condition), !!sym(Condition) == "", NA)) %>%
-  #   filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
+  #   dplyr::filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
   #   right_join(all_combinations, by = c("Sample_code", "Treatment")) %>% 
-  #   filter(grepl("TCB 0,01 nM",Treatment_reorder)) %>% 
+  #   dplyr::filter(grepl("TCB 0,01 nM",Treatment_reorder)) %>% 
   #   left_join(df_Cluster_response_cat, by = "Sample_code") %>% 
-  #   filter(Cluster_response_cat %in% Cluster_response_cat_filter)
+  #   dplyr::filter(Cluster_response_cat %in% Cluster_response_cat_filter)
   
     # Construction du modèle
   model <- lmer(B_cell_depletion_total ~ Treatment_reorder + (1|Sample_code), 
@@ -167,7 +129,6 @@ forest_plot_all <- ggplot(contrast_df, aes(x = Treatment,
     xmin = -Inf, xmax = Inf,
     ymin = unit(0.7, "npc"), ymax = unit(0.7, "npc")              # 90% from bottom
   )
-}
 #####Low Responder Forest Plot####
 {Control <- "UT"
 Cluster_response_cat_filter <- "Low_Responder"
@@ -178,11 +139,11 @@ Condition = "B_cell_depletion_total"
 data_treatment <- data_talyies_full %>%
   select(Treatment, Disease, Sample_code, Day, !!sym(Condition),B_cell_depletion_total) %>%
   mutate(!!sym(Condition) := replace(!!sym(Condition), !!sym(Condition) == "", NA)) %>%
-  filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
+  dplyr::filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
   right_join(all_combinations, by = c("Sample_code", "Treatment")) %>%
-  # filter(grepl("TCB 0,01 nM",Treatment_reorder)) %>%
+  # dplyr::filter(grepl("TCB 0,01 nM",Treatment_reorder)) %>%
   left_join(df_Cluster_response_cat, by = "Sample_code") %>%
-  filter(Cluster_response_cat %in% Cluster_response_cat_filter)
+  dplyr::filter(Cluster_response_cat %in% Cluster_response_cat_filter)
 
 # Construction du modèle
 model <- lmer(B_cell_depletion_total ~ Treatment_reorder + (1|Sample_code), 
@@ -273,11 +234,11 @@ Condition = "B_cell_depletion_total"
 data_treatment <- data_talyies_full %>%
   select(Treatment, Disease, Sample_code, Day, !!sym(Condition),B_cell_depletion_total) %>%
   mutate(!!sym(Condition) := replace(!!sym(Condition), !!sym(Condition) == "", NA)) %>%
-  filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
+  dplyr::filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
   right_join(all_combinations, by = c("Sample_code", "Treatment")) %>%
-  # filter(grepl("TCB 0,01 nM",Treatment_reorder)) %>%
+  # dplyr::filter(grepl("TCB 0,01 nM",Treatment_reorder)) %>%
   left_join(df_Cluster_response_cat, by = "Sample_code") %>%
-  filter(Cluster_response_cat %in% Cluster_response_cat_filter)
+  dplyr::filter(Cluster_response_cat %in% Cluster_response_cat_filter)
 
 # Construction du modèle
 model <- lmer(B_cell_depletion_total ~ Treatment_reorder + (1|Sample_code), 
@@ -360,7 +321,7 @@ forest_plot_medium <- ggplot(contrast_df, aes(x = Treatment,
 
 #####High Responder Forest Plot####
 {Control <- "UT"
-Cluster_response_cat_filter <- "High_Responder"
+Cluster_response_cat_filter<- "High_Responder"
 
 Condition = "B_cell_depletion_total"
 
@@ -369,11 +330,11 @@ Condition = "B_cell_depletion_total"
 data_treatment <- data_talyies_full %>%
   select(Treatment, Disease, Sample_code, Day, !!sym(Condition),B_cell_depletion_total) %>%
   mutate(!!sym(Condition) := replace(!!sym(Condition), !!sym(Condition) == "", NA)) %>%
-  filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
+  dplyr::filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
   right_join(all_combinations, by = c("Sample_code", "Treatment")) %>%
-  # filter(grepl("TCB 0,01 nM",Treatment_reorder)) %>%
+  # dplyr::filter(grepl("TCB 0,01 nM",Treatment_reorder)) %>%
   left_join(df_Cluster_response_cat, by = "Sample_code") %>%
-  filter(Cluster_response_cat %in% Cluster_response_cat_filter)
+  dplyr::filter(Cluster_response_cat %in% Cluster_response_cat_filter)
 
 # Construction du modèle
 model <- lmer(B_cell_depletion_total ~ Treatment_reorder + (1|Sample_code), 

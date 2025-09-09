@@ -1295,25 +1295,21 @@ C <- plot_grid((Plot_PDLS_number_FL ),(Plot_PDLS_number_DLBCL +
 
 E <- plot_grid((plot_sample_plot_population1_D0_D3_D6_FL ),(plot_sample_plot_population1_D0_D3_D6_DLBCL +
                                                                                    labs(title = "tFL/DLBCL")), ncol = 2, labels = c(""))
-'F' <- plot_grid((plot_sample_plot_populationCD3_D0_D3_FL ),(plot_sample_plot_populationCD3_D0_D3_DLBCL +
-                                                             labs(title = "tFL/DLBCL")), ncol = 2, labels = c(""))
-G <- plot_grid((plot_sample_plot_population2_D0_D3_FL ),(plot_sample_plot_population2_D0_D3_DLBCL +
-                                                             labs(title = "tFL/DLBCL")), ncol = 2, labels = c(""))
 
 
 Figure_2_total <- plot_grid(
   plot_grid(B,C, D, ncol = 3, labels = c("B","C", "D")),  # Deuxième ligne
   plot_grid(E, ncol = 1, labels = c("E")), # 3-4 Lignes
-  plot_grid(F, ncol = 1, labels = c("F")),
-  plot_grid(G, ncol = 1, labels = c("G")),
-  nrow=4 )
+  plot_grid(plot_correlation_D0_D3_pop1_all, ncol = 1, labels = c("F")),
+  nrow=3,
+  rel_heights = c(0.9, 1,0.8))
 
 ggsave(
   filename = "/run/user/309223354/gvfs/smb-share:server=crct-share.inserm.lan,share=crct09/Paul/Platforme_paper/Figure/Figure2/Figure_2_total.png",
   plot = Figure_2_total,
   device = "png",
   width = 32,        # largeur A4 en cm
-  height = 40 ,     # hauteur A4 en cm
+  height = 24 ,     # hauteur A4 en cm
   units = "cm",
   dpi = 300
 )
@@ -1328,18 +1324,25 @@ ggsave(
 #   units = "cm",
 #   dpi = 300
 # )
-####FIG 2####
+####Suppl. FIG 2####
+Asuppl <- plot_grid((plot_sample_plot_populationCD3_D0_D3_FL ),(plot_sample_plot_populationCD3_D0_D3_DLBCL +
+                                                               labs(title = "tFL/DLBCL")), ncol = 2, labels = c(""))
+Bsuppl <- plot_grid((plot_sample_plot_population2_D0_D3_FL ),(plot_sample_plot_population2_D0_D3_DLBCL +
+                                                           labs(title = "tFL/DLBCL")), ncol = 2, labels = c(""))
 
-Figure_2bis_total <- plot_grid(plot_correlation_D0_D3_pop1_all,plot_correlation_D0_D3_pop2_all, 
-                            labels = c("H","", ""),
-                            nrow=2 )
+
+
+Figure_2bis_suppl <- plot_grid(Asuppl,Bsuppl,plot_correlation_D0_D3_pop2_all, 
+                            labels = c("A","B", "C"),
+                            nrow=3,
+                            rel_heights = c(1, 1, 0.8))
 
 ggsave(
-  filename = "/run/user/309223354/gvfs/smb-share:server=crct-share.inserm.lan,share=crct09/Paul/Platforme_paper/Figure/Figure2/Figure_2bis_total.png",
-  plot = Figure_2bis_total,
+  filename = "/run/user/309223354/gvfs/smb-share:server=crct-share.inserm.lan,share=crct09/Paul/Platforme_paper/Figure/Figure2/Figure_2bis_suppl.png",
+  plot = Figure_2bis_suppl,
   device = "png",
   width = 32,        # largeur A4 en cm
-  height = 18 ,     # hauteur A4 en cm
+  height = 24 ,     # hauteur A4 en cm
   units = "cm",
   dpi = 300
 )

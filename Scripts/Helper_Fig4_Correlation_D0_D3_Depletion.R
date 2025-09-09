@@ -1,10 +1,10 @@
 ##### Correlation Condition WITHOUT normalization and B Cell Depletion ######
 # Préparer les données
-{Current_day = "D6"
-  Condition = "Per_CD107a_CD4"
-  # Current_treatment = "αTIGIT 0,1 µg/mL"
+{Current_day = "D0"
+  Condition = "Per_CD8"
+  # Current_treatment = "αTIGIT 0.1 µg/mL"
   
-  Current_treatment = "αCD20-TCB 0,01 nM"
+  Current_treatment = "αCD20-TCB 0.1 nM"
   
 markers_d0 <- data_talyies_full %>%
   filter(Day %in% Current_day & Pop == "CD3_CD8") %>%
