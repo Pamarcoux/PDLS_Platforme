@@ -1,5 +1,4 @@
 library(writexl)
-library(tidyverse)
 library(patchwork)
 library(ggpubr)
 library(ggrepel)
@@ -13,6 +12,8 @@ library(paletteer)
 library(magick)
 library(RColorBrewer)
 library(scales)
+library(tidyverse)
+
 
 source("../GlofiResistance/00_Metadata_Talyies.R")
 ####FL####
@@ -54,7 +55,7 @@ data_sample_plot_area <- data_filtered %>%
   mutate(variable = gsub("_Per", "", variable)) %>%
   distinct()
 
-Plot_PDLS_area_FL <- ggplot(data_sample_plot_area, aes(x = Day, y = value/1e6)) +
+Plot_PDLS_area_FL <- ggplot(data_sample_plot_area, aes(x = Day, y = value/1e7)) +
   geom_point(aes(fill = Sample_code),  # Utiliser 'fill' pour la couleur de remplissage
              shape = 21,  # Utiliser un shape qui supporte le remplissage
              color = "black",  # Utiliser 'color' pour la bordure

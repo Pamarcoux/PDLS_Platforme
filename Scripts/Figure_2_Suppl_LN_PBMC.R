@@ -14,7 +14,7 @@ library(magick)
 library(RColorBrewer)
 library(scales)
 
-
+source("../GlofiResistance/00_Metadata_Talyies.R")
 ####LNvPBMC####
 data_talyies_LN_PBMC <- data_talyies_full %>% 
   filter(Disease %in% c("FL","DLBCL","tFL") & Origin %in% c("LN","PBMC")) %>% 
@@ -329,8 +329,20 @@ Figure_1_Suppl <- plot_grid(
   plot_grid(E, ncol = 1, labels = c("C")),
   nrow=3 )
 
+
+if (CRCT_Share == TRUE) {
 ggsave(
   filename = "/run/user/309223354/gvfs/smb-share:server=crct-share.inserm.lan,share=crct09/Paul/Platforme_paper/Figure/Figure2/Figure_2_Suppl.png",
+  plot = Figure_1_Suppl,
+  device = "png",
+  width = 29.7,        # largeur A4 en cm
+  height = 20 ,     # hauteur A4 en cm
+  units = "cm",
+  dpi = 300
+)
+}
+ggsave(
+  filename = here("Figure","Figure2","Figure_2_Suppl.png"),
   plot = Figure_1_Suppl,
   device = "png",
   width = 29.7,        # largeur A4 en cm

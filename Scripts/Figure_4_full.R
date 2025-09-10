@@ -2,6 +2,8 @@
   library(lme4)      # Pour les modèles mixtes
   library(lmerTest)  # Pour obtenir les p-values
   library(emmeans)   # Pour les comparaisons post-hoc
+
+source("../GlofiResistance/00_Metadata_Talyies.R")
   
 Control <- "UT"
 
@@ -10,10 +12,10 @@ Condition = "B_cell_depletion_total"
   data_treatment <- data_talyies_full %>%
     select(Treatment, Disease, Sample_code, Day,B_cell_depletion_total,Condition) %>%
     mutate(!!sym(Condition) := replace(!!sym(Condition), !!sym(Condition) == "", NA)) %>%
-    filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL") & B_cell_depletion_total > -40) %>%
+    dplyr::filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL") & B_cell_depletion_total > -40) %>%
     right_join(all_combinations, by = c("Sample_code", "Treatment")) %>% 
-    filter(Treatment_type == "Single" & !Sample_code %in% c("DLBCL1_LN1","FL10_PB1"))
-  # filter(grepl("TCB 0,01 nM",Treatment_reorder))
+    dplyr::filter(Treatment_type == "Single" & !Sample_code %in% c("DLBCL1_LN1","FL10_PB1"))
+  # dplyr::filter(grepl("TCB 0,01 nM",Treatment_reorder))
   
   data_treatment_plot <- data_treatment 
 
@@ -118,10 +120,10 @@ Condition = "Per_CD107a_CD4"
 data_treatment <- data_talyies_full %>%
   select(Treatment, Disease, Sample_code, Day,B_cell_depletion_total,Condition) %>%
   mutate(!!sym(Condition) := replace(!!sym(Condition), !!sym(Condition) == "", NA)) %>%
-  filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL") & B_cell_depletion_total > -40) %>%
+  dplyr::filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL") & B_cell_depletion_total > -40) %>%
   right_join(all_combinations, by = c("Sample_code", "Treatment")) %>% 
-  filter(Treatment_type == "Single" & !Sample_code %in% c("DLBCL1_LN1","FL10_PB1"))
-# filter(grepl("TCB 0,01 nM",Treatment_reorder))
+  dplyr::filter(Treatment_type == "Single" & !Sample_code %in% c("DLBCL1_LN1","FL10_PB1"))
+# dplyr::filter(grepl("TCB 0,01 nM",Treatment_reorder))
 
 data_treatment_plot <- data_treatment 
 
@@ -226,10 +228,10 @@ Condition = "Per_CD107a_CD8"
 data_treatment <- data_talyies_full %>%
   select(Treatment, Disease, Sample_code, Day,B_cell_depletion_total,Condition) %>%
   mutate(!!sym(Condition) := replace(!!sym(Condition), !!sym(Condition) == "", NA)) %>%
-  filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL") & B_cell_depletion_total > -40) %>%
+  dplyr::filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL") & B_cell_depletion_total > -40) %>%
   right_join(all_combinations, by = c("Sample_code", "Treatment")) %>% 
-  filter(Treatment_type == "Single" & !Sample_code %in% c("DLBCL1_LN1","FL10_PB1"))
-# filter(grepl("TCB 0,01 nM",Treatment_reorder))
+  dplyr::filter(Treatment_type == "Single" & !Sample_code %in% c("DLBCL1_LN1","FL10_PB1"))
+# dplyr::filter(grepl("TCB 0,01 nM",Treatment_reorder))
 
 data_treatment_plot <- data_treatment 
 
@@ -334,9 +336,9 @@ Condition = "GrzB"
 data_treatment <- data_talyies_full %>%
   select(Treatment, Disease, Sample_code, Day,B_cell_depletion_total,Condition) %>%
   mutate(!!sym(Condition) := replace(!!sym(Condition), !!sym(Condition) == "", NA)) %>%
-  filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL") & B_cell_depletion_total > -40) %>%
+  dplyr::filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL") & B_cell_depletion_total > -40) %>%
   right_join(all_combinations, by = c("Sample_code", "Treatment")) %>% 
-  filter(Treatment_type == "Single" & !Sample_code %in% c("DLBCL1_LN1","FL10_PB1"))
+  dplyr::filter(Treatment_type == "Single" & !Sample_code %in% c("DLBCL1_LN1","FL10_PB1"))
 
 data_treatment_plot <- data_treatment 
 
@@ -443,12 +445,12 @@ Disease_list <- c("FL","tFL","DLBCL")
 Origin_list <- c("PBMC","LN")
 
 data_correlation <- data_talyies_full %>% 
-  filter(Day == "D6", Disease %in% Disease_list) %>%
-  filter(Origin %in% Origin_list) %>% 
+  dplyr::filter(Day == "D6", Disease %in% Disease_list) %>%
+  dplyr::filter(Origin %in% Origin_list) %>% 
   right_join(all_combinations, by = c("Sample_code", "Treatment")) %>%
-  filter(Treatment_type == "Single") %>%
-  filter(B_cell_depletion_total > -50) %>% 
-  filter(Treatment_type == "Single" & !Sample_code %in% c("DLBCL1_LN1","FL10_PB1"))
+  dplyr::filter(Treatment_type == "Single") %>%
+  dplyr::filter(B_cell_depletion_total > -50) %>% 
+  dplyr::filter(Treatment_type == "Single" & !Sample_code %in% c("DLBCL1_LN1","FL10_PB1"))
 
 ##### Per_CD8_D0 ######
 {Current_day = "D0"
@@ -458,23 +460,23 @@ Condition = "Per_CD8"
 Current_treatment = "αCD20-TCB 0.1 nM"
 
 markers_d0 <- data_talyies_full %>%
-  filter(Day %in% Current_day & Pop == "CD3_CD8") %>%
+  dplyr::filter(Day %in% Current_day & Pop == "CD3_CD8") %>%
   select(Sample_code,!!sym(Condition)) 
 
 # Préparer les données de déplétion à D6
 data_depletion_d6 <- data_correlation %>%
   select(Sample_code,Treatment,B_cell_depletion_total,Treatment_reorder) %>% 
-  filter(Treatment_reorder %in% Current_treatment)
+  dplyr::filter(Treatment_reorder %in% Current_treatment)
 
 # Fusionner les données des marqueurs à D0 avec les données de déplétion à D6
 data_combined <- data_depletion_d6 %>%
   left_join(markers_d0, by = "Sample_code") %>% 
-  filter(Sample_code %in% Sample_list)
+  dplyr::filter(Sample_code %in% Sample_list)
 
 data_unnormalized <- data_combined %>%
-  filter(Treatment_reorder == Current_treatment) %>% 
+  dplyr::filter(Treatment_reorder == Current_treatment) %>% 
   mutate(value = (!!sym(Condition))) %>%
-  filter(B_cell_depletion_total > -50) 
+  dplyr::filter(B_cell_depletion_total > -50) 
 
 
 correlation_result <- cor.test(data_unnormalized$value, data_unnormalized$B_cell_depletion_total)
@@ -514,23 +516,23 @@ Condition = "Per_CD8"
 Current_treatment = "αCD20-TCB 0.1 nM"
 
 markers_d0 <- data_talyies_full %>%
-  filter(Day %in% Current_day & Pop == "CD3_CD8") %>%
+  dplyr::filter(Day %in% Current_day & Pop == "CD3_CD8") %>%
   select(Sample_code,!!sym(Condition)) 
 
 # Préparer les données de déplétion à D6
 data_depletion_d6 <- data_correlation %>%
   select(Sample_code,Treatment,B_cell_depletion_total,Treatment_reorder) %>% 
-  filter(Treatment_reorder %in% Current_treatment)
+  dplyr::filter(Treatment_reorder %in% Current_treatment)
 
 # Fusionner les données des marqueurs à D0 avec les données de déplétion à D6
 data_combined <- data_depletion_d6 %>%
   left_join(markers_d0, by = "Sample_code") %>% 
-  filter(Sample_code %in% Sample_list)
+  dplyr::filter(Sample_code %in% Sample_list)
 
 data_unnormalized <- data_combined %>%
-  filter(Treatment_reorder == Current_treatment) %>% 
+  dplyr::filter(Treatment_reorder == Current_treatment) %>% 
   mutate(value = (!!sym(Condition))) %>%
-  filter(B_cell_depletion_total > -50) 
+  dplyr::filter(B_cell_depletion_total > -50) 
 
 
 correlation_result <- cor.test(data_unnormalized$value, data_unnormalized$B_cell_depletion_total)
@@ -570,26 +572,26 @@ Condition = "Cell_count_PDLS"
 Current_treatment = "αCD20-TCB 0.1 nM"
 
 markers_d0 <- data_talyies_full %>%
-  filter(Day %in% Current_day & Pop == "CD3_CD8") %>%
+  dplyr::filter(Day %in% Current_day & Pop == "CD3_CD8") %>%
   select(Sample_code,!!sym(Condition)) %>% 
   rename(Cell_count_PDLS_D3=Cell_count_PDLS )
 
 # Préparer les données de déplétion à D6
 data_depletion_d6 <- data_correlation %>%
   select(Sample_code,Treatment,B_cell_depletion_total,Treatment_reorder,Cell_count_PDLS) %>% 
-  filter(Treatment_reorder %in% Current_treatment) %>% 
+  dplyr::filter(Treatment_reorder %in% Current_treatment) %>% 
   rename(Cell_count_PDLS_D6=Cell_count_PDLS )
 
 # Fusionner les données des marqueurs à D0 avec les données de déplétion à D6
 data_combined <- data_depletion_d6 %>%
   left_join(markers_d0, by = "Sample_code") %>% 
-  filter(Sample_code %in% Sample_list) %>% 
+  dplyr::filter(Sample_code %in% Sample_list) %>% 
   mutate(Ratio_cell_count_D6_D3 = Cell_count_PDLS_D6 / Cell_count_PDLS_D3)
 
 data_unnormalized <- data_combined %>%
-  filter(Treatment_reorder == Current_treatment) %>% 
+  dplyr::filter(Treatment_reorder == Current_treatment) %>% 
   mutate(value = (Ratio_cell_count_D6_D3)) %>%
-  filter(B_cell_depletion_total > -50) 
+  dplyr::filter(B_cell_depletion_total > -50) 
 
 
 correlation_result <- cor.test(data_unnormalized$value, data_unnormalized$B_cell_depletion_total)
@@ -629,12 +631,12 @@ Current_treatment = "αTIGIT 10 µg/mL"
 # Préparer les données de déplétion à D6
 data_depletion_d6 <- data_correlation %>%
   select(Sample_code,Treatment,B_cell_depletion_total,Treatment_reorder,Per_CD107a_CD4) %>% 
-  filter(Treatment_reorder %in% Current_treatment)
+  dplyr::filter(Treatment_reorder %in% Current_treatment)
 
 data_unnormalized <- data_depletion_d6 %>%
-  filter(Treatment_reorder == Current_treatment) %>% 
+  dplyr::filter(Treatment_reorder == Current_treatment) %>% 
   mutate(value = (!!sym(Condition))) %>%
-  filter(B_cell_depletion_total > -50) 
+  dplyr::filter(B_cell_depletion_total > -50) 
 
 
 correlation_result <- cor.test(data_unnormalized$value, data_unnormalized$B_cell_depletion_total)
@@ -673,8 +675,19 @@ Figure_4_total <- plot_grid(A_final_plot,B_final_plot,C_final_plot,D_final_plot,
                             labels = c("A","B","C","D","E"),
                             rel_heights = c(1,1,1,1,0.7))
 
+if (CRCT_Share == TRUE) {
 ggsave(filename =  paste0("/run/user/309223354/gvfs/smb-share:server=crct-share.inserm.lan,share=crct09/Paul/Platforme_paper/Figure/Figure4/Figure_4_total.png"),
        plot = Figure_4_total,
+       device = "png",
+       width = 36,        # largeur A4 en cm
+       height = 48 ,     # hauteur A4 en cm
+       units = "cm",
+       dpi = 300)
+}
+
+ggsave(
+  filename = here("Figure","Figure4","Figure_4_total.png"),
+  plot = Figure_4_total,
        device = "png",
        width = 36,        # largeur A4 en cm
        height = 48 ,     # hauteur A4 en cm

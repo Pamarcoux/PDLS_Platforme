@@ -14,7 +14,7 @@ library(magick)
 library(RColorBrewer)
 library(scales)
 
-source("~/Postdoc/R/GlofiResistance/00_Metadata_Talyies.R")
+source("../GlofiResistance/00_Metadata_Talyies.R")
 
 ###FL####
 ##### Plot ICP FL CD4 ####
@@ -820,8 +820,19 @@ Figure_3_total <- plot_grid(
 
 print(Figure_3_total)
 
+if (CRCT_Share == TRUE) {
 ggsave(
   filename = "/run/user/309223354/gvfs/smb-share:server=crct-share.inserm.lan,share=crct09/Paul/Platforme_paper/Figure/Figure3/Figure_3_total.png",
+  plot = Figure_3_total,
+  device = "png",
+  width = 32,        # largeur A4 en cm
+  height = 45 ,     # hauteur A4 en cm
+  units = "cm",
+  dpi = 300
+)
+}
+ggsave(
+  filename = here("Figure","Figure3","Figure_3_total.png"),
   plot = Figure_3_total,
   device = "png",
   width = 32,        # largeur A4 en cm
@@ -941,8 +952,20 @@ Figure_3_Suppl<- plot_grid(
 
 print(Figure_3_Suppl)
 
+if (CRCT_Share == TRUE) {
 ggsave(
   filename = "/run/user/309223354/gvfs/smb-share:server=crct-share.inserm.lan,share=crct09/Paul/Platforme_paper/Figure/Figure3/Figure_3_Suppl.png",
+  plot = Figure_3_Suppl,
+  device = "png",
+  width = 29,        # largeur A4 en cm
+  height = 20 ,     # hauteur A4 en cm
+  units = "cm",
+  dpi = 300
+)
+}
+
+ggsave(
+  filename = here("Figure","Figure3","Figure_3_Suppl.png"),
   plot = Figure_3_Suppl,
   device = "png",
   width = 29,        # largeur A4 en cm

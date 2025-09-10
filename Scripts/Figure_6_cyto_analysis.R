@@ -1,4 +1,3 @@
-source('~/Postdoc/R/GlofiResistance/00_Metadata_Talyies.R')
 library(flowCore)
 library(data.table)
 library(impute)
@@ -6,14 +5,14 @@ library(pheatmap)
 library(scales)
 library(ggplotify)
 
+source("../GlofiResistance/00_Metadata_Talyies.R")
 
-
-data_metacluster_responder <- read.csv('~/Postdoc/R/Cyto_analysis/Data/Talyies/Metacluster_in_Responder_group.csv',
+data_metacluster_responder <- read.csv('../Cyto_analysis/Data/Talyies/Metacluster_in_Responder_group.csv',
                                        sep=",") 
 
 ####Plot tsne Cytometry #####
 # Set your folder
-fcs_path <- "~/Postdoc/R/Cyto_analysis/Data/Talyies/FCS_files"
+fcs_path <- "../Cyto_analysis/Data/Talyies/FCS_files"
 fcs_files <- list.files(fcs_path, pattern = ".fcs$", full.names = TRUE)
 
 # Load and merge
@@ -35,7 +34,7 @@ merged_data_facs <- merged_data_facs %>%
          "TIM-3"="PECF 594-A",
          "PD-1"="BV605-A",
          "TIGIT"="PerCP-Cy5-5-A",
-         "41BB"="APC-A",
+         "4-1BB"="APC-A",
          "CD28"="FITC-A",
          "Aqua"="BV510-A"
          )
@@ -61,10 +60,10 @@ merged_data_facs$FlowSOM_metacluster_id <- factor(
 #####Plot Markers#####
 merged_data_facs_pivot <- merged_data_facs %>% 
   select(-CD3,-Aqua) %>% 
-  pivot_longer(cols = c("CD4", "CD8", "LAG-3", "TIM-3", "PD-1", "TIGIT", "41BB", "CD28"),
+  pivot_longer(cols = c("CD4", "CD8", "LAG-3", "TIM-3", "PD-1", "TIGIT", "4-1BB", "CD28"),
                names_to = "Marker",
                values_to = "Expression") %>%
-  mutate(Marker = factor(Marker, levels = c("CD4", "CD8","41BB", "CD28", "LAG-3", "TIM-3", "PD-1", "TIGIT")))
+  mutate(Marker = factor(Marker, levels = c("CD4", "CD8","4-1BB", "CD28", "LAG-3", "TIM-3", "PD-1", "TIGIT")))
 
 # Define the marker levels
 markers <- levels(merged_data_facs_pivot$Marker)
@@ -73,7 +72,7 @@ markers <- levels(merged_data_facs_pivot$Marker)
 color_limits <- list(
   "CD4" = c(-300, 33000),
   "CD8" = c(-100, 25000),
-  "41BB" = c(-250, 5500),
+  "4-1BB" = c(-250, 5500),
   "CD28" = c(-800, 828000),
   "LAG-3" = c(-700, 3100),
   "TIM-3" = c(-700, 27000),
@@ -148,7 +147,7 @@ tsne_clusters_plot <- tsnep + annotation_custom(
 marker_order = c("CD3","CD4","CD8","PD-1","LAG-3","TIGIT","TIM-3")
 
 
-data_heatmap_cluster <- read.csv('~/Postdoc/R/Cyto_analysis/Data/Talyies/Metacluster_Box_Plots_Means.csv',sep=";") %>% 
+data_heatmap_cluster <- read.csv('../Cyto_analysis/Data/Talyies/Metacluster_Box_Plots_Means.csv',sep=";") %>% 
   rename(Markers = Stats.channel,
          Mean = Mean.of.channel) %>% 
   dplyr::filter(Markers %in% c("CD3","CD4","CD8","PD1","LAG3","TIGIT","TIM3")) %>% 
@@ -201,7 +200,7 @@ sample_list <- data_talyies_full %>%
   dplyr::filter(Day == "D6", Disease %in% c("FL","DLBCL","tFL")) %>% 
   distinct(Sample_code) 
 
-table_treatment <- read_csv('Paper_platforme/liste_combo.csv') %>%
+table_treatment <- read_csv(here("liste_combo.csv")) %>%
   mutate(Treatment = apply(.[c("A", "B", "C")], 1, function(row) {
     paste(na.omit(row), collapse = " + ")
   })) %>% 
@@ -371,8 +370,6 @@ pheatmap_gg_anot <- as.ggplot(~{
 })
 
 ####Bar Plot repartition responder cluster ####
-data_metacluster_responder <- read.csv('~/Postdoc/R/Cyto_analysis/Data/Talyies/Metacluster_in_Responder_group.csv',
-                                       sep=",") 
 #Rename and prepare 
 data_metacluster_responder <- data_metacluster_responder %>% 
   rename(FlowSOM_metacluster_id = Metacluster.ID,
@@ -452,8 +449,21 @@ Figure_cyto_total <- plot_grid(
 
 print(Figure_cyto_total)
 
+
+if (CRCT_Share == TRUE) {
 ggsave(
   filename = "/run/user/309223354/gvfs/smb-share:server=crct-share.inserm.lan,share=crct09/Paul/Platforme_paper/Figure/Figure6/Figure_6_cyto.png",
+  plot = Figure_cyto_total,
+  device = "png",
+  width = 35,        # largeur A4 en cm
+  height = 38 ,     # hauteur A4 en cm
+  units = "cm",
+  dpi = 300
+)
+}
+
+ggsave(
+  filename = here("Figure","Figure6","Figure_6_cyto.png"),
   plot = Figure_cyto_total,
   device = "png",
   width = 35,        # largeur A4 en cm

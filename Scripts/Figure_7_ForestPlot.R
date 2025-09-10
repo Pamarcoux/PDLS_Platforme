@@ -14,7 +14,7 @@ library(tidyverse)
   library(lmerTest)  # Pour obtenir les p-values
   library(emmeans)   # Pour les comparaisons post-hoc
   
-source("~/Postdoc/R/GlofiResistance/00_Metadata_Talyies.R")
+source("../GlofiResistance/00_Metadata_Talyies.R")
 
 ####Calcul the forest plot data ####
 #####All Samples####
@@ -125,7 +125,7 @@ forest_plot_all <- ggplot(contrast_df, aes(x = Treatment,
                          l = 1))+ # Left margin 
   ylim(-30,125) +
   annotation_custom(
-    grob = textGrob("Your Text Here", gp = gpar(fontsize = 20)),  # size in points
+    grob = textGrob("", gp = gpar(fontsize = 20)),  # size in points
     xmin = -Inf, xmax = Inf,
     ymin = unit(0.7, "npc"), ymax = unit(0.7, "npc")              # 90% from bottom
   )
@@ -425,8 +425,20 @@ Figure_7_total <- ggdraw() +
              fontface = "bold", size = 12) +
   draw_plot(combined_plots, x = 0.05, y = 0, width = 0.95, height = 1)
 
+if (CRCT_Share == TRUE) {
 ggsave(
   filename = "/run/user/309223354/gvfs/smb-share:server=crct-share.inserm.lan,share=crct09/Paul/Platforme_paper/Figure/Figure7/Figure_7_total.png",
+  plot = Figure_7_total,
+  device = "png",
+  width = 31,        # largeur A4 en cm
+  height = 40 ,     # hauteur A4 en cm
+  units = "cm",
+  dpi = 300
+)
+}
+
+ggsave(
+  filename = here("Figure","Figure7","Figure_7_total.png"),
   plot = Figure_7_total,
   device = "png",
   width = 31,        # largeur A4 en cm

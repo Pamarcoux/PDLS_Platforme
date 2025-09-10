@@ -1,4 +1,4 @@
-{library(tidyverse)
+library(tidyverse)
 library(dplyr)
 library(tidyr)
 library(stringr)
@@ -21,33 +21,6 @@ conditions <- c("B_cell_depletion_total", "Per_CD107a_CD4_normalized", "Per_CD10
 
 Condition = "Response_type_total"
 
-#### Choix des Combos ####
-sample_list <- data_talyies_full %>% 
-  dplyr::filter(Day == "D6", Disease %in% c("FL","DLBCL","tFL")) %>% 
-  distinct(Sample_code) 
-
-table_treatment <- read_csv('Paper_platforme/liste_combo.csv') %>%
-  mutate(Treatment = apply(.[c("A", "B", "C")], 1, function(row) {
-    paste(na.omit(row), collapse = " + ")
-  })) %>% 
-  mutate(Treatment_reorder = apply(.[c("E", "F", "G")], 1, function(row) {
-    paste(na.omit(row), collapse = " + ")
-  })) %>% 
-  select(Treatment_reorder,Treatment,Treatment_type,Treatment_Cat) %>% 
-  # dplyr::filter(!grepl("TCB 10 nM", Treatment_reorder)) %>% #dplyr::filter les Treatments
-  dplyr::filter(!grepl("GA101", Treatment_reorder) & !grepl("IL2v", Treatment_reorder) & !grepl("TCB 10 nM", Treatment_reorder) 
-         &  !grepl("ZB2", Treatment_reorder) ) %>% #dplyr::filter les Treatments
-  mutate(Treatment_reorder = factor(Treatment_reorder, levels = sort(unique(Treatment_reorder)))) 
-
-all_combinations <- crossing(sample_list$Sample_code, table_treatment$Treatment_reorder) %>% 
-  rename(Sample_code = 'sample_list$Sample_code', Treatment_reorder = 'table_treatment$Treatment_reorder') %>% 
-  left_join(table_treatment,relationship = "many-to-many") %>% 
-  left_join(data_sample_info_complete) %>% 
-  dplyr::filter(Disease %in% c("FL","DLBCL","tFL") & Screening == TRUE) %>% 
-  select(Treatment,Sample_code,Treatment_reorder,Treatment_type,Treatment_Cat) %>% 
-  mutate(Treatment_Cat = factor(Treatment_Cat, levels = (c("UT","αCD20-TCB","Inhibiteur_CP","Co_Activator","ADC"))))
-}
-  
 ####Heatmap####
 ######HEAT MAP B Cell Depletion#######
 {# Préparer les données
@@ -655,7 +628,7 @@ print(heatmap_Condition)}
   select(Treatment, Disease, Sample_code, Day, all_of(conditions)) %>%
   dplyr::filter(Day == "D6", Disease %in% c("FL", "DLBCL", "tFL")) %>%
   right_join(all_combinations, by = c("Sample_code", "Treatment")) %>% 
-  dplyr::filter(grepl("PD1",Treatment_reorder)) 
+  dplyr::filter(grepl("PD-1",Treatment_reorder)) 
 
 # Compter le nombre de NA dans la colonne Treatment pour chaque Sample_code
 No_data_sample_list <- data_heatmap %>%
