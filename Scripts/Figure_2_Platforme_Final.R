@@ -14,7 +14,7 @@ library(magick)
 library(RColorBrewer)
 library(scales)
 
-source("~/Postdoc/R/GlofiResistance/00_Metadata_Talyies.R")
+source("../GlofiResistance/00_Metadata_Talyies.R")
 ####FL####
 #### Info plot ###
 
@@ -1304,8 +1304,19 @@ Figure_2_total <- plot_grid(
   nrow=3,
   rel_heights = c(0.9, 1,0.8))
 
+if (CRCT_Share == TRUE) {
 ggsave(
   filename = "/run/user/309223354/gvfs/smb-share:server=crct-share.inserm.lan,share=crct09/Paul/Platforme_paper/Figure/Figure2/Figure_2_total.png",
+  plot = Figure_2_total,
+  device = "png",
+  width = 32,        # largeur A4 en cm
+  height = 24 ,     # hauteur A4 en cm
+  units = "cm",
+  dpi = 300
+)
+}
+ggsave(
+  filename = here("Figure","Figure2","Figure_2_total.png"),
   plot = Figure_2_total,
   device = "png",
   width = 32,        # largeur A4 en cm
@@ -1336,7 +1347,7 @@ Figure_2bis_suppl <- plot_grid(Asuppl,Bsuppl,plot_correlation_D0_D3_pop2_all,
                             labels = c("A","B", "C"),
                             nrow=3,
                             rel_heights = c(1, 1, 0.8))
-
+if (CRCT_Share == TRUE) {
 ggsave(
   filename = "/run/user/309223354/gvfs/smb-share:server=crct-share.inserm.lan,share=crct09/Paul/Platforme_paper/Figure/Figure2/Figure_2bis_suppl.png",
   plot = Figure_2bis_suppl,
@@ -1346,7 +1357,16 @@ ggsave(
   units = "cm",
   dpi = 300
 )
-
+}
+ggsave(
+  filename = here("Figure","Figure2","Figure_2bis_suppl.png"),
+  plot = Figure_2bis_suppl,
+  device = "png",
+  width = 32,        # largeur A4 en cm
+  height = 24 ,     # hauteur A4 en cm
+  units = "cm",
+  dpi = 300
+)
 
 
 # ######Suppl Fig ####
