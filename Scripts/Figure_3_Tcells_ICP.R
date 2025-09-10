@@ -27,7 +27,8 @@ data_sample_plot_icp_CD4<- data_sample_plot_icp %>%
          variable =recode(variable,
                           PD1 = 'PD-1',
                           LAG3 = 'LAG-3',
-                          TIM3 = 'TIM-3'))
+                          TIM3 = 'TIM-3',
+                          '41BB' = '4-1BB'))
 
 # # Identifier les Sample_code qui apparaissent à la fois pour D0 et D3
 samples_with_D0_D3_icp <- data_sample_plot_icp_CD4 %>% filter(variable == "PD-1") %>%
@@ -42,7 +43,7 @@ data_sample_plot_icp_CD4 <- data_sample_plot_icp_CD4 %>%
 graph_list <- list()
 for (i in (1:2)) {
   if (i == 1) {
-    variable_i <- c("41BB","CD28")
+    variable_i <- c("4-1BB","CD28")
   } else {
     variable_i <- c("LAG-3", "PD-1", "TIGIT","TIM-3")
   }
@@ -106,7 +107,7 @@ data_sample_plot_icp_CD8 <- data_sample_plot_icp_CD8 %>%
 graph_list <- list()
 for (i in (1:2)) {
   if (i == 1) {
-    variable_i <- c("41BB","CD28")
+    variable_i <- c("4-1BB","CD28")
   } else {
     variable_i <- c("LAG-3", "PD-1", "TIGIT","TIM-3")
   }
@@ -172,7 +173,7 @@ data_sample_plot_icp_CD4 <- data_sample_plot_icp_CD4 %>%
 graph_list <- list()
 for (i in (1:2)) {
   if (i == 1) {
-    variable_i <- c("41BB","CD28")
+    variable_i <- c("4-1BB","CD28")
   } else {
     variable_i <- c("LAG-3", "PD-1", "TIGIT","TIM-3")
   }
@@ -239,7 +240,7 @@ data_sample_plot_icp_CD8 <- data_sample_plot_icp_CD8 %>%
 graph_list <- list()
 for (i in (1:2)) {
   if (i == 1) {
-    variable_i <- c("41BB","CD28")
+    variable_i <- c("4-1BB","CD28")
   } else {
     variable_i <- c("LAG-3", "PD-1", "TIGIT","TIM-3")
   }
@@ -365,7 +366,7 @@ data_sample_plot_icp_CD4 <- data_sample_plot_icp_CD4 %>%
 graph_list <- list()
 for (i in (1:2)) {
   if (i == 1) {
-    variable_i <- c("41BB","CD28")
+    variable_i <- c("4-1BB","CD28")
   } else {
     variable_i <- c("LAG-3", "PD-1", "TIGIT","TIM-3")
   }
@@ -433,7 +434,7 @@ data_sample_plot_icp_CD8 <- data_sample_plot_icp_CD8 %>%
 graph_list <- list()
 for (i in (1:2)) {
   if (i == 1) {
-    variable_i <- c("41BB","CD28")
+    variable_i <- c("4-1BB","CD28")
   } else {
     variable_i <- c("LAG-3", "PD-1", "TIGIT","TIM-3")
   }
@@ -502,7 +503,7 @@ data_sample_plot_icp_CD4 <- data_sample_plot_icp_CD4 %>%
 graph_list <- list()
 for (i in (1:2)) {
   if (i == 1) {
-    variable_i <- c("41BB","CD28")
+    variable_i <- c("4-1BB","CD28")
   } else {
     variable_i <- c("LAG-3", "PD-1", "TIGIT","TIM-3")
   }
@@ -572,7 +573,7 @@ data_sample_plot_icp_CD8 <- data_sample_plot_icp_CD8 %>%
 graph_list <- list()
 for (i in (1:2)) {
   if (i == 1) {
-    variable_i <- c("41BB","CD28")
+    variable_i <- c("4-1BB","CD28")
   } else {
     variable_i <- c("LAG-3", "PD-1", "TIGIT","TIM-3")
   }
@@ -683,7 +684,8 @@ data_sample_plot_icp_CD4<- data_sample_plot_icp %>%
          variable =recode(variable,
                           PD1 = 'PD-1',
                           LAG3 = 'LAG-3',
-                          TIM3 = 'TIM-3'))
+                          TIM3 = 'TIM-3',
+                          '41BB' = '4-1BB'))
 
 data_correlation_icp_CD4 <- data_sample_plot_icp_CD4 %>% filter(Day %in% c("D0","D3")) %>% 
   group_by(Sample_code,Day) %>% 
@@ -746,8 +748,8 @@ data_sample_plot_icp_CD8<- data_sample_plot_icp %>%
          variable =recode(variable,
                           PD1 = 'PD-1',
                           LAG3 = 'LAG-3',
-                          TIM3 = 'TIM-3'))
-
+                          TIM3 = 'TIM-3',
+                          '41BB' = '4-1BB'))
 data_correlation_icp_CD8 <- data_sample_plot_icp_CD8 %>% filter(Day %in% c("D0","D3")) %>% 
   group_by(Sample_code,Day) %>% 
   rename(Proportion = value) %>% 
@@ -879,17 +881,18 @@ sample_colors_LN_PBMC <- setNames(c("#a00000","#1a80bb"), c("LN","PB"))
 data_sample_plot_icp <- data_talyies_LN_PBMC %>% select(Origin,Disease,Sample_code,B_cell_depletion_total,Day,Pop,'41BBL_Per',PDL1_Per,PDL2_Per,CD79b_Per,LAG3_Per,TIM3_Per,PD1_Per,TIGIT_Per,'41BB_Per',CD28_Per,'PD1/LAG3_Per','PD1/TIM3_Per')
 data_sample_plot_icp_CD4<- data_sample_plot_icp %>% 
   filter(Pop == "CD3_CD4", Day %in% c("D0","D3")) %>% 
-  select(Origin,Disease,Sample_code,B_cell_depletion_total,Day,Pop,LAG3_Per,TIM3_Per,PD1_Per,TIGIT_Per,CD28_Per) %>% 
+  select(Origin,Disease,Sample_code,B_cell_depletion_total,Day,Pop,LAG3_Per,TIM3_Per,PD1_Per,TIGIT_Per,CD28_Per,'41BB_Per') %>% 
   melt(id.vars = c("Disease","B_cell_depletion_total","Day","Pop","Sample_code","Origin")) %>% 
   mutate(variable = gsub("_Per", "", variable),
          variable =recode(variable,
                           PD1 = 'PD-1',
                           LAG3 = 'LAG-3',
-                          TIM3 = 'TIM-3'))
+                          TIM3 = 'TIM-3',
+                          '41BB' = '4-1BB'))
 
 plot_icp_CD4_PBvsLN <- ggplot(data_sample_plot_icp_CD4, aes(x = Day, y = value,fill = Origin)) +
   geom_boxplot(position = position_dodge(0.8), outliers = FALSE, colour = "black", size = 0.5) +
-  facet_wrap(vars(variable), ncol = 5, strip.position = "bottom") +
+  facet_wrap(vars(variable), ncol = 6, strip.position = "bottom") +
   stat_compare_means(method = "t.test", paired = FALSE, aes(group = Origin), 
                      hide.ns = TRUE, label = "p.signif", 
                      size = 3, vjust = 0.1, label.x.npc = 'middle') +  
@@ -906,17 +909,18 @@ plot_icp_CD4_PBvsLN <- ggplot(data_sample_plot_icp_CD4, aes(x = Day, y = value,f
 data_sample_plot_icp <- data_talyies_LN_PBMC %>% select(Origin,Disease,Sample_code,B_cell_depletion_total,Day,Pop,'41BBL_Per',PDL1_Per,PDL2_Per,CD79b_Per,LAG3_Per,TIM3_Per,PD1_Per,TIGIT_Per,'41BB_Per',CD28_Per,'PD1/LAG3_Per','PD1/TIM3_Per')
 data_sample_plot_icp_CD8<- data_sample_plot_icp %>% 
   filter(Pop == "CD3_CD8", Day %in% c("D0","D3")) %>% 
-  select(Origin,Disease,Sample_code,B_cell_depletion_total,Day,Pop,LAG3_Per,TIM3_Per,PD1_Per,TIGIT_Per,CD28_Per) %>% 
+  select(Origin,Disease,Sample_code,B_cell_depletion_total,Day,Pop,LAG3_Per,TIM3_Per,PD1_Per,TIGIT_Per,CD28_Per,'41BB_Per') %>% 
   melt(id.vars = c("Disease","B_cell_depletion_total","Day","Pop","Sample_code","Origin")) %>% 
   mutate(variable = gsub("_Per", "", variable),
          variable =recode(variable,
                           PD1 = 'PD-1',
                           LAG3 = 'LAG-3',
-                          TIM3 = 'TIM-3'))
+                          TIM3 = 'TIM-3',
+                          '41BB' = '4-1BB'))
 
 plot_icp_CD8_PBvsLN <- ggplot(data_sample_plot_icp_CD8, aes(x = Day, y = value,fill = Origin)) +
   geom_boxplot(position = position_dodge(0.8), outliers = FALSE, colour = "black", size = 0.5) +
-  facet_wrap(vars(variable), ncol = 5, strip.position = "bottom") +
+  facet_wrap(vars(variable), ncol = 6, strip.position = "bottom") +
   stat_compare_means(method = "t.test", paired = FALSE, aes(group = Origin), 
                      hide.ns = TRUE, label = "p.signif", 
                      size = 3, vjust = 0.1, label.x.npc = 'middle') +  
