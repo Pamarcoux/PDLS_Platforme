@@ -14,7 +14,7 @@ library(magick)
 library(RColorBrewer)
 library(scales)
 
-source("~/Postdoc/R/GlofiResistance/00_Metadata_Talyies.R")
+source("../GlofiResistance/00_Metadata_Talyies.R")
 ####FL####
 #### Info plot ###
 
