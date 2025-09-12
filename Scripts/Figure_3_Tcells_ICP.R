@@ -92,7 +92,8 @@ data_sample_plot_icp_CD8<- data_sample_plot_icp %>%
          variable =recode(variable,
                           PD1 = 'PD-1',
                           LAG3 = 'LAG-3',
-                          TIM3 = 'TIM-3'))
+                          TIM3 = 'TIM-3',
+                          '41BB' = '4-1BB'))
 
 # # Identifier les Sample_code qui apparaissent à la fois pour D0 et D3
 samples_with_D0_D3_icp <- data_sample_plot_icp_CD8 %>% filter(variable == "PD-1") %>%
@@ -158,7 +159,8 @@ data_sample_plot_icp_CD4<- data_sample_plot_icp %>%
          variable =recode(variable,
                           PD1 = 'PD-1',
                           LAG3 = 'LAG-3',
-                          TIM3 = 'TIM-3'))
+                          TIM3 = 'TIM-3',
+                          '41BB' = '4-1BB'))
 
 # Identifier les Sample_code qui apparaissent à la fois pour D0 et D3
 samples_with_D0_D3_icp <- data_sample_plot_icp_CD4 %>% filter(variable == "PD-1") %>% 
@@ -225,7 +227,8 @@ data_sample_plot_icp_CD8<- data_sample_plot_icp %>%
          variable =recode(variable,
                           PD1 = 'PD-1',
                           LAG3 = 'LAG-3',
-                          TIM3 = 'TIM-3'))
+                          TIM3 = 'TIM-3',
+                          '41BB' = '4-1BB'))
 
 # Identifier les Sample_code qui apparaissent à la fois pour D0 et D3
 samples_with_D0_D3_icp <- data_sample_plot_icp_CD8 %>% filter(variable == "PD-1") %>% 
@@ -351,7 +354,8 @@ data_sample_plot_icp_CD4<- data_sample_plot_icp %>%
          variable =recode(variable,
                           PD1 = 'PD-1',
                           LAG3 = 'LAG-3',
-                          TIM3 = 'TIM-3'))
+                          TIM3 = 'TIM-3',
+                          '41BB' = '4-1BB'))
 
 # # Identifier les Sample_code qui apparaissent à la fois pour D0 et D3
 samples_with_D0_D3_icp <- data_sample_plot_icp_CD4 %>% filter(variable == "PD-1") %>%
@@ -419,7 +423,8 @@ data_sample_plot_icp_CD8<- data_sample_plot_icp %>%
          variable =recode(variable,
                           PD1 = 'PD-1',
                           LAG3 = 'LAG-3',
-                          TIM3 = 'TIM-3'))
+                          TIM3 = 'TIM-3',
+                          '41BB' = '4-1BB'))
 
 # # Identifier les Sample_code qui apparaissent à la fois pour D0 et D3
 samples_with_D0_D3_icp <- data_sample_plot_icp_CD8 %>% filter(variable == "PD-1") %>%
@@ -487,7 +492,8 @@ data_sample_plot_icp_CD4<- data_sample_plot_icp %>%
          variable =recode(variable,
                            PD1 = 'PD-1',
                           LAG3 = 'LAG-3',
-                          TIM3 = 'TIM-3'))
+                          TIM3 = 'TIM-3',
+                          '41BB' = '4-1BB'))
   
 
 # Identifier les Sample_code qui apparaissent à la fois pour D0 et D3
@@ -558,7 +564,8 @@ data_sample_plot_icp_CD8<- data_sample_plot_icp %>%
          variable =recode(variable,
                           PD1 = 'PD-1',
                           LAG3 = 'LAG-3',
-                          TIM3 = 'TIM-3'))
+                          TIM3 = 'TIM-3',
+                          '41BB' = '4-1BB'))
 
 # Identifier les Sample_code qui apparaissent à la fois pour D0 et D3
 samples_with_D0_D3_icp <- data_sample_plot_icp_CD8 %>% filter(variable == "PD-1") %>% 

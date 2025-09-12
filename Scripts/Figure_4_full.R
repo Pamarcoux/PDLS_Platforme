@@ -470,8 +470,7 @@ data_depletion_d6 <- data_correlation %>%
 
 # Fusionner les données des marqueurs à D0 avec les données de déplétion à D6
 data_combined <- data_depletion_d6 %>%
-  left_join(markers_d0, by = "Sample_code") %>% 
-  dplyr::filter(Sample_code %in% Sample_list)
+  left_join(markers_d0, by = "Sample_code")
 
 data_unnormalized <- data_combined %>%
   dplyr::filter(Treatment_reorder == Current_treatment) %>% 
@@ -526,8 +525,7 @@ data_depletion_d6 <- data_correlation %>%
 
 # Fusionner les données des marqueurs à D0 avec les données de déplétion à D6
 data_combined <- data_depletion_d6 %>%
-  left_join(markers_d0, by = "Sample_code") %>% 
-  dplyr::filter(Sample_code %in% Sample_list)
+  left_join(markers_d0, by = "Sample_code") 
 
 data_unnormalized <- data_combined %>%
   dplyr::filter(Treatment_reorder == Current_treatment) %>% 
@@ -585,7 +583,6 @@ data_depletion_d6 <- data_correlation %>%
 # Fusionner les données des marqueurs à D0 avec les données de déplétion à D6
 data_combined <- data_depletion_d6 %>%
   left_join(markers_d0, by = "Sample_code") %>% 
-  dplyr::filter(Sample_code %in% Sample_list) %>% 
   mutate(Ratio_cell_count_D6_D3 = Cell_count_PDLS_D6 / Cell_count_PDLS_D3)
 
 data_unnormalized <- data_combined %>%
