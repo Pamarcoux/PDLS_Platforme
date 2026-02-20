@@ -1,0 +1,364 @@
+---
+title: "Review Hemasphere"
+author: "Paul Marcoux"
+date: today
+date-format: "YYYY-MM-DD"
+format: 
+  html:
+    page-layout: full
+    toc: true
+    toc-depth: 3
+    toc-location: left
+    code-fold: true
+    echo: false
+    code-summary: "Show code"
+    code-tools: true
+    theme: cosmo
+    embed-resources: true
+    number-sections: true
+execute:
+  warning: false
+  message: false
+  fig-width: 6
+  fig-asp: 0.618
+  # fig-width: 12
+  column: page
+---
+
+```{r setup}
+#| warning: true
+#| include: false
+library(here)
+library(DT)
+library(gtools)
+
+source(here("../GlofiResistance/00_Metadata_Talyies.R"))
+```
+# Recap Patient
+```{r Table Patients Review}
+Data_info_patients <- data_newpatients_full |> 
+  filter(Treatment == "UT" & Day == "D6" & !is.na(B_cell_depletion_total)) |> 
+  select(Sample_code,Patient_code, Disease, Origin, Location) |> 
+  relocate(Sample_code) |> 
+  arrange(Sample_code) |> 
+  distinct()
+
+Data_info_patients <- Data_info_patients[mixedorder(Data_info_patients$Sample_code), ]
+
+knitr::kable(Data_info_patients)
+
+```
+
+
+# Evolution of ICP at D6 between UT and αCD20-TCB 0,1 nM
+
+Stats: Paired Wilcoxon test
+
+## In CD4+ Cells
+
+```{r}
+#| echo: false
+#| warning: false
+data_newpatients_filter <- data_newpatients_full |> 
+  filter(Pop == "CD3_CD4" & Day == "D6" & Treatment %in% c("UT","αCD20-TCB 0,1 nM"))
+
+ggplot(data_newpatients_filter, aes(x = Treatment , y = TIGIT_Per, color = Sample_code)) +
+  geom_point()+
+  geom_line(aes(group= Sample_code))+
+  stat_compare_means(method = "wilcox.test", paired = TRUE, aes(group = Treatment), hide.ns = FALSE, 
+                       label = "p.format", size = 3, vjust = 0,label.x.npc = 'middle') + 
+  labs(title = "% of CD4+ TIGIT+ at D6",
+       x = "Sample Code",
+       y = "Percentage of CD4+ TIGIT+") +
+  theme_blood()
+
+ggplot(data_newpatients_filter, aes(x = Treatment , y = PD1_Per, color = Sample_code)) +
+  geom_point()+
+  geom_line(aes(group= Sample_code))+
+  stat_compare_means(method = "wilcox.test", paired = TRUE, aes(group = Treatment), hide.ns = FALSE, 
+                       label = "p.format", size = 3, vjust = 0,label.x.npc = 'middle') + 
+  labs(title = "% of CD4+ PD1+ at D6",
+       x = "Sample Code",
+       y = "Percentage of CD4+ TIGIT+") +
+  theme_blood()
+
+ggplot(data_newpatients_filter, aes(x = Treatment , y = PD1_TIGIT_Per, color = Sample_code)) +
+  geom_point()+
+  geom_line(aes(group= Sample_code))+
+  stat_compare_means(method = "wilcox.test", paired = TRUE, aes(group = Treatment), hide.ns = FALSE, 
+                       label = "p.format", size = 3, vjust = 0,label.x.npc = 'middle') + 
+  labs(title = "% of CD4+ TIGIT+/PD1+ at D6",
+       x = "Sample Code",
+       y = "Percentage of CD4+ TIGIT+/PD1+") +
+  theme_blood()
+
+```
+
+## In CD8+ Cells
+
+```{r}
+#| warning: false
+data_newpatients_filter <- data_newpatients_full |> 
+  filter(Pop == "CD3_CD8" & Day == "D6" & Treatment %in% c("UT","αCD20-TCB 0,1 nM"))
+
+ggplot(data_newpatients_filter, aes(x = Treatment , y = TIGIT_Per, color = Sample_code)) +
+  geom_point()+
+  geom_line(aes(group= Sample_code))+
+  stat_compare_means(method = "wilcox.test", paired = TRUE, aes(group = Treatment), hide.ns = FALSE, 
+                       label = "p.format", size = 3, vjust = 0,label.x.npc = 'middle') + 
+  labs(title = "% of CD8+ TIGIT+ at D6",
+       x = "Sample Code",
+       y = "Percentage of CD8+ TIGIT+") +
+  theme_blood()
+
+ggplot(data_newpatients_filter, aes(x = Treatment , y = PD1_Per, color = Sample_code)) +
+  geom_point()+
+  geom_line(aes(group= Sample_code))+
+  stat_compare_means(method = "wilcox.test", paired = TRUE, aes(group = Treatment), hide.ns = FALSE, 
+                       label = "p.format", size = 3, vjust = 0,label.x.npc = 'middle') + 
+  labs(title = "% of CD8+ PD1+ at D6",
+       x = "Sample Code",
+       y = "Percentage of CD8+ TIGIT+") +
+  theme_blood() 
+
+ggplot(data_newpatients_filter, aes(x = Treatment , y = PD1_TIGIT_Per, color = Sample_code)) +
+  geom_point()+
+  geom_line(aes(group= Sample_code))+
+  stat_compare_means(method = "wilcox.test", paired = TRUE, aes(group = Treatment), hide.ns = FALSE, 
+                       label = "p.format", size = 3, vjust = 0,label.x.npc = 'middle') + 
+  labs(title = "% of CD8+ TIGIT+/PD1+ at D6",
+       x = "Sample Code",
+       y = "Percentage of CD8+ TIGIT+/PD1+") +
+  theme_blood()
+```
+
+# DLBCL GC vs ABC vs tFL
+```{r}
+DLBCL_ABC <- c("DLBCL1_LN1","DLBCL3_PB1","DLBCL5_PB1")
+DLBCL_GC <- c("DLBCL2_LN1","DLBCL4_PB1","DLBCL6_LN1")
+
+data_talyies_tFL <- data_talyies_full %>%
+  filter(Review == FALSE) %>%
+  dplyr::filter(Disease %in% c("tFL") & Origin %in% c("PBMC", "LN")) 
+
+data_talyies_DLBCL_GC <- data_talyies_full %>%
+  filter(Review == FALSE) %>%
+  dplyr::filter(Disease %in% c("DLBCL") & Origin %in% c("PBMC", "LN") & Sample_code %in% DLBCL_GC) 
+
+data_talyies_DLBCL_ABC <- data_talyies_full %>%
+  filter(Review == FALSE) %>%
+  dplyr::filter(Disease %in% c("DLBCL") & Origin %in% c("PBMC", "LN") & Sample_code %in% DLBCL_ABC) 
+```
+
+
+## Viability
+```{r Plot FL Via}
+data_filtered <- data_talyies_FL %>%
+  select(Origin, Disease, Treatment, Sample_code, B_cell_depletion_total, Day, Viability) %>%
+  # filter(Day %in% c("D0","D3","D6") & Treatment == "UT" & !is.na(Viability))
+  filter(Day %in% c("D3","D6") & Treatment == "UT" & !is.na(Viability))
+  
+  
+# Identifier les Sample_code qui apparaissent à la fois pour D3 et D6
+samples_with_D0_D3_D6 <- data_filtered %>%
+  group_by(Sample_code) %>% filter(is.na(Viability) == FALSE) %>%
+  filter(n_distinct(Day) == 2) %>%
+  ungroup() %>% distinct(Sample_code) %>% 
+  pull(Sample_code)
+
+data_sample_plot_viability<- data_filtered %>% select(Origin,Disease,Treatment,Sample_code,B_cell_depletion_total,Day,Viability) %>% 
+  filter(Sample_code %in% samples_with_D0_D3_D6) %>%
+  select(Sample_code,B_cell_depletion_total,Day,Viability,Disease,Origin) %>% 
+  melt(id.vars = c("B_cell_depletion_total","Day","Sample_code","Disease","Origin")) %>% 
+  mutate(variable = gsub("_Per", "", variable)) %>% 
+  distinct() 
+
+comparisons <- c("D3", "D6")
+# comparisons <- list(c("D0", "D3"), c("D0", "D6"),c("D3", "D6"))
+
+Plot_PDLS_viability_FL <- ggplot(data_sample_plot_viability, aes(x = Day, y = value)) +
+  geom_point(aes(fill = Sample_code),  # Utiliser 'fill' pour la couleur de remplissage
+             shape = 21,  # Utiliser un shape qui supporte le remplissage
+             color = "black",  # Utiliser 'color' pour la bordure
+             position = position_dodge(0),
+             size = 2.5, stroke = 0.5, alpha = 0.9) + 
+  geom_line(aes(group = Sample_code), 
+            position = position_dodge(0), 
+            color = "grey60", 
+            size = 0.2) +  
+  scale_y_continuous(limits = c(0, 110),breaks=c(0,20,40,40,60,80,100)) +
+  scale_fill_manual(values = sample_colors_FL)+
+  stat_compare_means(method = "t.test", paired = TRUE, 
+                     comparisons = comparisons,
+                     hide.ns = TRUE, label = "p.signif", 
+                     size = 3.5, label.y.npc = "top", vjust = 0.5)+
+  labs(
+    title = "FL",  # Titre du graphique
+    x = "",  # Légende de l'axe X
+    # y = "PDLS Area (µm²)",  # Légende de l'axe Y
+    y = "Viability (%)",  # Légende de l'axe Y
+    
+    fill = "Glofitamab Responders"  # Titre de la légende
+  ) +
+  theme_custom()+
+  theme(legend.position = "none")
+```
+```{r Plot tFL Via}
+data_filtered <- data_talyies_tFL %>%
+  select(Origin, Disease, Treatment, Sample_code, B_cell_depletion_total, Day, Viability) %>%
+  # filter(Day %in% c("D0","D3","D6") & Treatment == "UT" & !is.na(Viability))
+  filter(Day %in% c("D3","D6") & Treatment == "UT" & !is.na(Viability))
+  
+  
+# Identifier les Sample_code qui apparaissent à la fois pour D3 et D6
+samples_with_D0_D3_D6 <- data_filtered %>%
+  group_by(Sample_code) %>% filter(is.na(Viability) == FALSE) %>%
+  filter(n_distinct(Day) == 2) %>%
+  ungroup() %>% distinct(Sample_code) %>% 
+  pull(Sample_code)
+
+data_sample_plot_viability<- data_filtered %>% select(Origin,Disease,Treatment,Sample_code,B_cell_depletion_total,Day,Viability) %>% 
+  filter(Sample_code %in% samples_with_D0_D3_D6) %>%
+  select(Sample_code,B_cell_depletion_total,Day,Viability,Disease,Origin) %>% 
+  melt(id.vars = c("B_cell_depletion_total","Day","Sample_code","Disease","Origin")) %>% 
+  mutate(variable = gsub("_Per", "", variable)) %>% 
+  distinct() 
+
+comparisons <- c("D3", "D6")
+# comparisons <- list(c("D0", "D3"), c("D0", "D6"),c("D3", "D6"))
+
+Plot_PDLS_viability_tFL <- ggplot(data_sample_plot_viability, aes(x = Day, y = value)) +
+  geom_point(aes(fill = Sample_code),  # Utiliser 'fill' pour la couleur de remplissage
+             shape = 21,  # Utiliser un shape qui supporte le remplissage
+             color = "black",  # Utiliser 'color' pour la bordure
+             position = position_dodge(0),
+             size = 2.5, stroke = 0.5, alpha = 0.9) + 
+  geom_line(aes(group = Sample_code), 
+            position = position_dodge(0), 
+            color = "grey60", 
+            size = 0.2) +  
+  scale_y_continuous(limits = c(0, 110),breaks=c(0,20,40,40,60,80,100)) +
+  scale_fill_manual(values = sample_colors_FL)+
+  stat_compare_means(method = "t.test", paired = TRUE, 
+                     comparisons = comparisons,
+                     hide.ns = TRUE, label = "p.signif", 
+                     size = 3.5, label.y.npc = "top", vjust = 0.5)+
+  labs(
+    title = "tFL",  # Titre du graphique
+    x = "",  # Légende de l'axe X
+    # y = "PDLS Area (µm²)",  # Légende de l'axe Y
+    y = "Viability (%)",  # Légende de l'axe Y
+    
+    fill = "Glofitamab Responders"  # Titre de la légende
+  ) +
+  theme_custom()+
+  theme(legend.position = "none")
+```
+```{r Plot DLBCL Via non GC}
+
+data_filtered <- data_talyies_DLBCL_ABC %>%
+  select(Origin, Disease, Treatment, Sample_code, B_cell_depletion_total, Day, Viability) %>%
+  # filter(Day %in% c("D0","D3","D6") & Treatment == "UT" & !is.na(Viability))
+  filter(Day %in% c("D3","D6") & Treatment == "UT" & !is.na(Viability))
+
+# Identifier les Sample_code qui apparaissent à la fois pour D3 et D6
+samples_with_D0_D3_D6 <- data_filtered %>%
+  group_by(Sample_code) %>% filter(is.na(Viability) == FALSE) %>%
+  filter(n_distinct(Day) == 2) %>%
+  ungroup() %>% distinct(Sample_code) %>% 
+  pull(Sample_code)
+
+data_sample_plot_viability<- data_filtered %>% select(Origin,Disease,Treatment,Sample_code,B_cell_depletion_total,Day,Viability) %>% 
+  filter(Sample_code %in% samples_with_D0_D3_D6) %>%
+  select(Sample_code,B_cell_depletion_total,Day,Viability,Disease,Origin) %>% 
+  melt(id.vars = c("B_cell_depletion_total","Day","Sample_code","Disease","Origin")) %>% 
+  mutate(variable = gsub("_Per", "", variable)) %>% 
+  distinct() 
+
+comparisons <- c("D3", "D6")
+Plot_PDLS_viability_nonGC <- ggplot(data_sample_plot_viability, aes(x = Day, y = value)) +
+  geom_point(aes(fill = Sample_code),  # Utiliser 'fill' pour la couleur de remplissage
+             shape = 21,  # Utiliser un shape qui supporte le remplissage
+             color = "black",  # Utiliser 'color' pour la bordure
+             position = position_dodge(0),
+             size = 2.5, stroke = 0.5, alpha = 0.9) + 
+  geom_line(aes(group = Sample_code), 
+            position = position_dodge(0), 
+            color = "grey60", 
+            size = 0.2) +  
+  scale_fill_manual(values = sample_colors_tFL_DLBCL)+
+  scale_y_continuous(limits = c(0, 110),breaks=c(0,20,40,40,60,80,100)) +
+  stat_compare_means(method = "t.test", paired = TRUE, 
+                     comparisons = comparisons,
+                     hide.ns = TRUE, label = "p.signif", 
+                     size = 3.5, label.y.npc = "top", vjust = 0)+
+  labs(
+    title = "DLBCL non GC",  # Titre du graphique
+    x = "",  # Légende de l'axe X
+    # y = "PDLS Area (µm²)",  # Légende de l'axe Y
+    y = "Viability (%)",  # Légende de l'axe Y
+    
+    fill = "Glofitamab Responders"  # Titre de la légende
+  ) +
+  theme_custom()+
+  theme(legend.position = "none")
+```
+```{r Plot DLBCL Via GC}
+
+data_filtered <- data_talyies_DLBCL_GC %>%
+  select(Origin, Disease, Treatment, Sample_code, B_cell_depletion_total, Day, Viability) %>%
+  # filter(Day %in% c("D0","D3","D6") & Treatment == "UT" & !is.na(Viability))
+  filter(Day %in% c("D3","D6") & Treatment == "UT" & !is.na(Viability))
+
+# Identifier les Sample_code qui apparaissent à la fois pour D3 et D6
+samples_with_D0_D3_D6 <- data_filtered %>%
+  group_by(Sample_code) %>% filter(is.na(Viability) == FALSE) %>%
+  filter(n_distinct(Day) == 2) %>%
+  ungroup() %>% distinct(Sample_code) %>% 
+  pull(Sample_code)
+
+data_sample_plot_viability<- data_filtered %>% select(Origin,Disease,Treatment,Sample_code,B_cell_depletion_total,Day,Viability) %>% 
+  filter(Sample_code %in% samples_with_D0_D3_D6) %>%
+  select(Sample_code,B_cell_depletion_total,Day,Viability,Disease,Origin) %>% 
+  melt(id.vars = c("B_cell_depletion_total","Day","Sample_code","Disease","Origin")) %>% 
+  mutate(variable = gsub("_Per", "", variable)) %>% 
+  distinct() 
+
+comparisons <- c("D3", "D6")
+Plot_PDLS_viability_GC <- ggplot(data_sample_plot_viability, aes(x = Day, y = value)) +
+  geom_point(aes(fill = Sample_code),  # Utiliser 'fill' pour la couleur de remplissage
+             shape = 21,  # Utiliser un shape qui supporte le remplissage
+             color = "black",  # Utiliser 'color' pour la bordure
+             position = position_dodge(0),
+             size = 2.5, stroke = 0.5, alpha = 0.9) + 
+  geom_line(aes(group = Sample_code), 
+            position = position_dodge(0), 
+            color = "grey60", 
+            size = 0.2) +  
+  scale_fill_manual(values = sample_colors_tFL_DLBCL)+
+  scale_y_continuous(limits = c(0, 110),breaks=c(0,20,40,40,60,80,100)) +
+  stat_compare_means(method = "t.test", paired = TRUE, 
+                     comparisons = comparisons,
+                     hide.ns = TRUE, label = "p.signif", 
+                     size = 3.5, label.y.npc = "top", vjust = 0)+
+  labs(
+    title = "DLBCL GC",  # Titre du graphique
+    x = "",  # Légende de l'axe X
+    # y = "PDLS Area (µm²)",  # Légende de l'axe Y
+    y = "Viability (%)",  # Légende de l'axe Y
+    
+    fill = "Glofitamab Responders"  # Titre de la légende
+  ) +
+  theme_custom()+
+  theme(legend.position = "none")
+```
+
+
+```{r}
+#| echo: false
+#| warning: false
+plot_grid(Plot_PDLS_viability_FL,Plot_PDLS_viability_tFL, Plot_PDLS_viability_nonGC,(Plot_PDLS_viability_GC),
+                                                                ncol = 4, labels = c(""))
+```
+
+
