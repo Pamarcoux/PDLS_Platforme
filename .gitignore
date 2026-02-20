@@ -3,3 +3,6 @@
 .RData
 .Ruserdata
 /Figure
+*.csv
+*.odp
+/Data
