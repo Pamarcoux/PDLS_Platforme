@@ -36,6 +36,9 @@ source(here("../GlofiResistance/00_Metadata_Talyies.R"))
 ```
 # Recap Patient
 ```{r Table Patients Review}
+Pas_de_B_D6 <- c("tFL9_LN1", "DLBCL8_LN1", "DLBCL12_LN1", "tMZL3_LN1", "DLBCL10_LN1")
+
+
 Data_info_patients <- data_newpatients_full |> 
   filter(Treatment == "UT" & Day == "D6" & !is.na(B_cell_depletion_total)) |> 
   select(Sample_code,Patient_code, Disease, Origin, Location) |> 
@@ -60,7 +63,8 @@ Stats: Paired Wilcoxon test
 #| echo: false
 #| warning: false
 data_newpatients_filter <- data_newpatients_full |> 
-  filter(Pop == "CD3_CD4" & Day == "D6" & Treatment %in% c("UT","αCD20-TCB 0,1 nM"))
+  filter(Pop == "CD3_CD4" & Day == "D6" & Treatment %in% c("UT","αCD20-TCB 0,1 nM"))  |> 
+  filter(!Sample_code %in% Pas_de_B_D6)
 
 ggplot(data_newpatients_filter, aes(x = Treatment , y = TIGIT_Per, color = Sample_code)) +
   geom_point()+
@@ -99,7 +103,8 @@ ggplot(data_newpatients_filter, aes(x = Treatment , y = PD1_TIGIT_Per, color = S
 ```{r}
 #| warning: false
 data_newpatients_filter <- data_newpatients_full |> 
-  filter(Pop == "CD3_CD8" & Day == "D6" & Treatment %in% c("UT","αCD20-TCB 0,1 nM"))
+  filter(Pop == "CD3_CD8" & Day == "D6" & Treatment %in% c("UT","αCD20-TCB 0,1 nM")) |> 
+  filter(!Sample_code %in% Pas_de_B_D6)
 
 ggplot(data_newpatients_filter, aes(x = Treatment , y = TIGIT_Per, color = Sample_code)) +
   geom_point()+

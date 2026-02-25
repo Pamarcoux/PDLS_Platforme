@@ -302,6 +302,7 @@ cal_z_score <- function(x){
                                width = 24,
                                height = 7,
                                display_numbers = TRUE,
+                               fontsize_number = 6,
                                silent = TRUE)
   dev.off()
   pheatmap_gg <- as_ggplot(resultat_heatmap$gtable)
@@ -321,19 +322,19 @@ cal_z_score <- function(x){
 }
 
   line1 <- linesGrob(
-  x = unit(c(0.009, 0.161), "npc"), 
+  x = unit(c(0.009, 0.381), "npc"), 
   y = unit(c(0.07, 0.07), "npc"),
   gp = gpar(col = "black", lwd = 3.5)
 )
 
   line2 <- linesGrob(
-    x = unit(c(0.168, 0.457), "npc"), 
+    x = unit(c(0.388, 0.617), "npc"), 
     y = unit(c(0.07, 0.07), "npc"),
     gp = gpar(col = "black", lwd = 3.5)
   )
 
 line3 <- linesGrob(
-  x = unit(c(0.463, 0.83), "npc"), 
+  x = unit(c(0.624, 0.83), "npc"), 
   y = unit(c(0.07, 0.07), "npc"),
   gp = gpar(col = "black", lwd = 3.5)
 )
@@ -341,19 +342,19 @@ line3 <- linesGrob(
 # Add vertical text labels
 text1 <- textGrob(
   label = "High Responders", rot = 0,
-  x = unit(0.09, "npc"), y = unit(0.04, "npc"),
+  x = unit(0.727, "npc"), y = unit(0.04, "npc"),
   gp = gpar(col = "black", fontface = "bold", fontsize = 10)
 )
 
 text2 <- textGrob(
   label = "Medium Responders", rot = 0,
-  x = unit(0.32, "npc"), y = unit(0.04, "npc"),
+  x = unit(0.502, "npc"), y = unit(0.04, "npc"),
   gp = gpar(col = "black", fontface = "bold", fontsize = 10)
 )
 
 text3 <- textGrob(
   label = "Low Responders", rot = 0,
-  x = unit(0.65, "npc"), y = unit(0.04, "npc"),
+  x = unit(0.195, "npc"), y = unit(0.04, "npc"),
   gp = gpar(col = "black", fontface = "bold", fontsize = 10)
 )
 
@@ -425,25 +426,18 @@ A_cyto <- plot_grid(
   # vjust = ,)
 
 
-B_cyto <- plot_grid(
-  tsne_markers_plot, 
-  ncol = 1,
-  labels = c("B"))
-  # vjust = ,)
-
 C_D_E <- plot_grid(heatmap_cluster_plot,tsne_clusters_plot,plot_barplot_reparition_responders,
                  rel_widths = c(1.1, 1,0.9),
                  ncol = 3, 
-                 labels = c("C","D","E"),
+                 labels = c("B","C","D"),
                  axis = "tb",
                  align = "h")
 
 Figure_cyto_total <- plot_grid(
   plot_grid(A_cyto, ncol = 1, labels = c("")),
-  plot_grid(B_cyto, ncol = 1, labels = c("")),
   plot_grid(C_D_E, ncol = 1, labels = c("")),
-  nrow=3 ,
-  rel_heights = c(1, 1,0.8),
+  nrow=2 ,
+  rel_heights = c(1,0.8),
   axis = "bt",
   align = "hv")
 
@@ -452,25 +446,55 @@ print(Figure_cyto_total)
 
 if (CRCT_Share == TRUE) {
 ggsave(
-  filename = "/run/user/309223354/gvfs/smb-share:server=crct-share.inserm.lan,share=crct09/Paul/Platforme_paper/Figure/Figure6/Figure_6_cyto.png",
+  filename = "/run/user/309223354/gvfs/smb-share:server=crct-share.inserm.lan,share=crct09/Paul/Platforme_paper/Figure/Figure5/Figure_5_cyto.png",
   plot = Figure_cyto_total,
   device = "png",
   width = 35,        # largeur A4 en cm
-  height = 38 ,     # hauteur A4 en cm
+  height = 27 ,     # hauteur A4 en cm
   units = "cm",
   dpi = 300
 )
 }
 
 ggsave(
-  filename = here("Figure","Figure6","Figure_6_cyto.png"),
+  filename = here("Figure","Figure5","Figure_5_cyto.png"),
   plot = Figure_cyto_total,
   device = "png",
   width = 35,        # largeur A4 en cm
-  height = 38 ,     # hauteur A4 en cm
+  height = 27 ,     # hauteur A4 en cm
   units = "cm",
   dpi = 300
 )
 }
+
+
+####Suppl Fig ####
+B_cyto <- plot_grid(
+  tsne_markers_plot, 
+  ncol = 1,
+  labels = c("A"))
+# vjust = ,)
+
+if (CRCT_Share == TRUE) {
+  ggsave(
+    filename = "/run/user/309223354/gvfs/smb-share:server=crct-share.inserm.lan,share=crct09/Paul/Platforme_paper/Figure/Figure5/Figure_5_cyto_suppl.png",
+    plot = B_cyto,
+    device = "png",
+    width = 29.7,        # largeur A4 en cm
+    height = 12 ,     # hauteur A4 en cm
+    units = "cm",
+    dpi = 300
+  )
+}
+
+ggsave(
+  filename = here("Figure","Figure5","Figure_5_cyto_suppl.png"),
+  plot = B_cyto,
+  device = "png",
+  width = 29.7,        # largeur A4 en cm
+  height = 12 ,     # hauteur A4 en cm
+  units = "cm",
+  dpi = 300
+)
 
 

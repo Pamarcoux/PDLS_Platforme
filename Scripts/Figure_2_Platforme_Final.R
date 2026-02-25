@@ -1279,8 +1279,15 @@ graph <-ggplot(data = data_correlation_population, aes(x = D0, y = D3, label = S
 
 plot_correlation_D0_D3_pop2_all <- plot_grid(plotlist = graph_list,ncol = 5, align = "v", axis = "tblr")
 
+Figure_1A <- image_read_pdf("Figure/Figure2/Figure_A2.pdf", density = 600)
+
+
 
 #### Montage ####
+A <- ggplot() +
+  annotation_raster(as.raster(Figure_1A), xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
+  theme_void()
+
 B <- plot_grid((Plot_PDLS_area_FL ),(Plot_PDLS_area_DLBCL +
                  labs(title = "tFL/DLBCL",
                       y ="")), ncol = 2, labels = c(""))
@@ -1299,11 +1306,12 @@ E <- plot_grid((plot_sample_plot_population1_D0_D3_D6_FL ),(plot_sample_plot_pop
 
 
 Figure_2_total <- plot_grid(
+  plot_grid(A, ncol = 1, labels = c("A")),  # Deuxième ligne
   plot_grid(B,C, D, ncol = 3, labels = c("B","C", "D")),  # Deuxième ligne
   plot_grid(E, ncol = 1, labels = c("E")), # 3-4 Lignes
   plot_grid(plot_correlation_D0_D3_pop1_all, ncol = 1, labels = c("F")),
-  nrow=3,
-  rel_heights = c(0.9, 1,0.8))
+  nrow=4,
+  rel_heights = c(0.5,0.9, 1,0.8))
 
 if (CRCT_Share == TRUE) {
 ggsave(
