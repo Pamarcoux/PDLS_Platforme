@@ -726,8 +726,14 @@ for (i in seq_along(unique(data_correlation_icp_CD4$variable))) {
     scale_fill_manual(values = sample_colors_all) +
     labs(title = paste0(population_name),
          subtitle = paste0("R = ",r_value,"\n𝑝 = ",p_value),
-         x = "% of \n CD4+ T-cells  \n D0 (Tumor)",
-         y="% of CD4+ T-cells \n D3 (PDLS)")+
+         x = "% CD4+ T-cells  \n D0 (Tumor)",
+         y="% CD4+ T-cells D3 (PDLS)")+
+    scale_x_continuous(
+      breaks = function(x) {
+        b <- scales::pretty_breaks(n = 4)(x)
+        b[b < 100]
+      }
+    )+
     theme_custom() +
     theme(legend.position = "none",
           plot.title = element_text(hjust = 0)) # Ajuster la taille du texte de l'axe y
@@ -786,14 +792,22 @@ for (i in seq_along(unique(data_correlation_icp_CD8$variable))) {
                color = "black",
                position = position_dodge(0),
                size = 2.5, stroke = 0.8, alpha = 0.9) +
+    # xlim(0,NA)+
     scale_fill_manual(values = sample_colors_all) +
     labs(title = paste0(population_name),
          subtitle = paste0("R = ",r_value,"\n𝑝 = ",p_value),
-         x = "% of \n CD8+ T-cells  \n D0 (Tumor)",
-         y="% of CD8+ T-cells \n D3 (PDLS)")+
+         x = "% CD8+ T-cells  \n D0 (Tumor)",
+         y="% CD8+ T-cells D3 (PDLS)")+
+    scale_x_continuous(
+      breaks = function(x) {
+        b <- scales::pretty_breaks(n = 4)(x)
+        b[b < 100]
+      }
+    )+
+    # scale_x_continuous(breaks = scales::breaks_pretty(n = 4)) +
     theme_custom() +
     theme(legend.position = "none",
-          plot.title = element_text(hjust = 0)) 
+          plot.title = element_text(hjust = 0))
   
   # Supprimer l'axe y pour les graphiques qui ne sont pas les premiers de la ligne
   if (i != 1) {
@@ -804,15 +818,14 @@ for (i in seq_along(unique(data_correlation_icp_CD8$variable))) {
   graph_list[[i]] <- graph
 }
 
-plot_correlation_D0_D3_ICP_CD8 <- plot_grid(plotlist = graph_list, ncol = 6, align = "v", axis = "tblr")+ labs(title = "FL")
+plot_correlation_D0_D3_ICP_CD8 <- plot_grid(plotlist = graph_list, ncol = 6, align = "hv", axis = "tblr")+ labs(title = "FL")
 ###Montage 2 with Suppl ####
 AB <- plot_grid((plot_act_CD4_FL),plot_act_CD4_DLBCL,plot_act_CD8_FL,plot_act_CD8_DLBCL, ncol = 4, labels = c("A","","B",""))
 AB_suppl <- plot_grid((plot_act_CD4_FL_RFI),plot_act_CD4_DLBCL_RFI,plot_act_CD8_FL_RFI,plot_act_CD8_DLBCL_RFI, ncol = 4, labels = c("A","","B",""))
 
-C <-  plot_grid(plot_icp_CD4_FL,plot_icp_CD4_DLBCL, ncol = 2, labels = c("C",""))
 C_suppl <-  plot_grid(plot_icp_CD4_FL_RFI,plot_icp_CD4_DLBCL_RFI, ncol = 2, labels = c("C",""))
 
-D <-  plot_grid(plot_icp_CD8_FL,plot_icp_CD8_DLBCL, ncol = 2, labels = c("D",""))
+D <-  plot_grid(plot_icp_CD8_FL,plot_icp_CD8_DLBCL, ncol = 2, labels = c("C",""))
 D_suppl <-  plot_grid(plot_icp_CD8_FL_RFI,plot_icp_CD8_DLBCL_RFI, ncol = 2, labels = c("D",""))
 
 E <- plot_correlation_D0_D3_ICP_CD4
@@ -820,12 +833,10 @@ F <- plot_correlation_D0_D3_ICP_CD8
 
 Figure_3_total <- plot_grid(
   plot_grid(AB, ncol = 1, labels = c("")),  # Deuxième ligne
-  plot_grid(C, ncol = 1, labels = c("")),
   plot_grid(D, ncol = 1, labels = c("")),
-  plot_grid(E, ncol = 1, labels = c("E")),
-  plot_grid(F, ncol = 1, labels = c("F")),
-  rel_heights = c(0.9,0.9,0.9,1,1),
-  nrow=5 )
+  plot_grid(F, ncol = 1, labels = c("D")),
+  rel_heights = c(0.9,0.9,1),
+  nrow=3 )
 
 print(Figure_3_total)
 
@@ -835,7 +846,7 @@ ggsave(
   plot = Figure_3_total,
   device = "png",
   width = 32,        # largeur A4 en cm
-  height = 45 ,     # hauteur A4 en cm
+  height = 26 ,     # hauteur A4 en cm
   units = "cm",
   dpi = 300
 )
@@ -845,7 +856,7 @@ ggsave(
   plot = Figure_3_total,
   device = "png",
   width = 32,        # largeur A4 en cm
-  height = 45 ,     # hauteur A4 en cm
+  height = 26 ,     # hauteur A4 en cm
   units = "cm",
   dpi = 300
 )
@@ -954,12 +965,16 @@ Figure_3_Suppl_RFI<- plot_grid(
   nrow=3 )
 
 
+A_suppl_review <-  plot_grid(plot_icp_CD4_FL,plot_icp_CD4_DLBCL, ncol = 2, labels = c("A",""))
+B_suppl_review <- plot_correlation_D0_D3_ICP_CD4
 
 Figure_3_Suppl<- plot_grid(
-  plot_grid(E_suppl, ncol = 1, labels = c("A")),
-  plot_grid(F_suppl, ncol = 1, labels = c("B")),
+  plot_grid(A_suppl_review, ncol = 1, labels = c("A")),
+  plot_grid(B_suppl_review, ncol = 1, labels = c("B")),
+  plot_grid(E_suppl, ncol = 1, labels = c("C")),
+  plot_grid(F_suppl, ncol = 1, labels = c("D")),
   
-  nrow=2 )
+  nrow=4 )
 
 print(Figure_3_Suppl)
 
@@ -968,8 +983,8 @@ ggsave(
   filename = "/run/user/309223354/gvfs/smb-share:server=crct-share.inserm.lan,share=crct09/Paul/Platforme_paper/Figure/Figure3/Figure_3_Suppl.png",
   plot = Figure_3_Suppl,
   device = "png",
-  width = 29,        # largeur A4 en cm
-  height = 20 ,     # hauteur A4 en cm
+  width = 32,        # largeur A4 en cm
+  height = 29 ,     # hauteur A4 en cm
   units = "cm",
   dpi = 300
 )
@@ -979,8 +994,8 @@ ggsave(
   filename = here("Figure","Figure3","Figure_3_Suppl.png"),
   plot = Figure_3_Suppl,
   device = "png",
-  width = 29,        # largeur A4 en cm
-  height = 20 ,     # hauteur A4 en cm
+  width = 32,        # largeur A4 en cm
+  height = 29 ,     # hauteur A4 en cm
   units = "cm",
   dpi = 300
 )
