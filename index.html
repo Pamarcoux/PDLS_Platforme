@@ -3142,6 +3142,14 @@ vertical-align: -.125em;
 <div class="cell">
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 18%">
+<col style="width: 11%">
+<col style="width: 9%">
+<col style="width: 12%">
+<col style="width: 31%">
+</colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Sample_code</th>
@@ -3149,6 +3157,7 @@ vertical-align: -.125em;
 <th style="text-align: left;">Disease</th>
 <th style="text-align: left;">Origin</th>
 <th style="text-align: left;">Location</th>
+<th style="text-align: right;">B_cell_depletion_total</th>
 </tr>
 </thead>
 <tbody>
@@ -3158,6 +3167,7 @@ vertical-align: -.125em;
 <td style="text-align: left;">DLBCL</td>
 <td style="text-align: left;">LN</td>
 <td style="text-align: left;">TLS</td>
+<td style="text-align: right;">16.640</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">DLBCL9_LN1</td>
@@ -3165,6 +3175,7 @@ vertical-align: -.125em;
 <td style="text-align: left;">DLBCL</td>
 <td style="text-align: left;">LN</td>
 <td style="text-align: left;">TLS</td>
+<td style="text-align: right;">27.219</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">DLBCL10_LN1</td>
@@ -3172,6 +3183,7 @@ vertical-align: -.125em;
 <td style="text-align: left;">DLBCL</td>
 <td style="text-align: left;">LN</td>
 <td style="text-align: left;">GRNB</td>
+<td style="text-align: right;">1.522</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">DLBCL15_LN1</td>
@@ -3179,6 +3191,7 @@ vertical-align: -.125em;
 <td style="text-align: left;">DLBCL</td>
 <td style="text-align: left;">LN</td>
 <td style="text-align: left;">MTP</td>
+<td style="text-align: right;">57.856</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">DLBCL16_LN1</td>
@@ -3186,6 +3199,7 @@ vertical-align: -.125em;
 <td style="text-align: left;">DLBCL</td>
 <td style="text-align: left;">LN</td>
 <td style="text-align: left;">MTP</td>
+<td style="text-align: right;">71.260</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">DLBCL17_LN1</td>
@@ -3193,6 +3207,7 @@ vertical-align: -.125em;
 <td style="text-align: left;">DLBCL</td>
 <td style="text-align: left;">LN</td>
 <td style="text-align: left;">MTP</td>
+<td style="text-align: right;">98.712</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">tFL8_LN1</td>
@@ -3200,6 +3215,7 @@ vertical-align: -.125em;
 <td style="text-align: left;">tFL</td>
 <td style="text-align: left;">LN</td>
 <td style="text-align: left;">TLS</td>
+<td style="text-align: right;">97.315</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">tFL9_LN1</td>
@@ -3207,6 +3223,7 @@ vertical-align: -.125em;
 <td style="text-align: left;">tFL</td>
 <td style="text-align: left;">LN</td>
 <td style="text-align: left;">TLS</td>
+<td style="text-align: right;">-37.453</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">tFL10_LN1</td>
@@ -3214,6 +3231,7 @@ vertical-align: -.125em;
 <td style="text-align: left;">tFL</td>
 <td style="text-align: left;">LN</td>
 <td style="text-align: left;">TLS</td>
+<td style="text-align: right;">96.891</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">tMZL3_LN1</td>
@@ -3221,6 +3239,7 @@ vertical-align: -.125em;
 <td style="text-align: left;">tMZL</td>
 <td style="text-align: left;">LN</td>
 <td style="text-align: left;">GRNB</td>
+<td style="text-align: right;">35.825</td>
 </tr>
 </tbody>
 </table>
@@ -3812,8 +3831,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="in">Data_info_patients &lt;- data_newpatients_full |&gt; </span></span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="in">  filter(Treatment == &quot;UT&quot; &amp; Day == &quot;D6&quot; &amp; !is.na(B_cell_depletion_total)) |&gt; </span></span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="in">  select(Sample_code,Patient_code, Disease, Origin, Location) |&gt; </span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="in">  filter(Treatment == &quot;αCD20-TCB 0,1 nM&quot; &amp; Day == &quot;D6&quot; &amp; !is.na(B_cell_depletion_total)) |&gt; </span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="in">  select(Sample_code,Patient_code, Disease, Origin, Location,B_cell_depletion_total) |&gt; </span></span>
 <span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="in">  relocate(Sample_code) |&gt; </span></span>
 <span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="in">  arrange(Sample_code) |&gt; </span></span>
 <span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="in">  distinct()</span></span>
