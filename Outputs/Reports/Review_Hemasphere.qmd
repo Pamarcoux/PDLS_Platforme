@@ -20,7 +20,6 @@ execute:
   warning: false
   message: false
   fig-width: 6
-  fig-asp: 0.618
   # fig-width: 12
   column: page
 ---
@@ -40,8 +39,8 @@ Pas_de_B_D6 <- c("tFL9_LN1", "DLBCL8_LN1", "DLBCL12_LN1", "tMZL3_LN1", "DLBCL10_
 
 
 Data_info_patients <- data_newpatients_full |> 
-  filter(Treatment == "UT" & Day == "D6" & !is.na(B_cell_depletion_total)) |> 
-  select(Sample_code,Patient_code, Disease, Origin, Location) |> 
+  filter(Treatment == "αCD20-TCB 0,1 nM" & Day == "D6" & !is.na(B_cell_depletion_total)) |> 
+  select(Sample_code,Patient_code, Disease, Origin, Location,B_cell_depletion_total) |> 
   relocate(Sample_code) |> 
   arrange(Sample_code) |> 
   distinct()
